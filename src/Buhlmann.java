@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Buhlmann {
 
-    private static double[][] ZHL16ATissues; //
+    private static double[][] ZHL16ATissues;
     private static double[][] ZHL16BTissues;
     private static double[][] ZHL16CTissues;
 
