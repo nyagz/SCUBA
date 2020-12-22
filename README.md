@@ -1,4 +1,4 @@
 # SCUBA
 
-Code for my 3rd year dissertation project for decompression algorithms used for SCUBA diving
+Code for my final year dissertation project for decompression algorithms used in SCUBA diving
  
