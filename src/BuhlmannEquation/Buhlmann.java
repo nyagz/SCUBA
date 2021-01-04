@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class Buhlmann {
 
     public static final double startP_he = 0;
-    public static final double startP_N2 = 0.7902; //Starting pressure of N2
+    public static final double startP_N2 = 0.7902; // Starting pressure of N2
     public static final double waterVapourPressure = 0.0627;
     public static final int surfacePressure = 1;
 
-    public static final double f_gas = 0.68; //EAN32
+    public static final double f_gas = 0.68; // EAN32
 
     // gf
     public static double gfLow = 0.3;
@@ -33,11 +34,32 @@ public class Buhlmann {
      * @param schreinerPressure - pressures in each compartment from schreiner's equation
      * @return
      */
+    public static double[] buhlmannP_l(double[] schreinerPressure, Double gf){
+        double[] p_l = new double[16];
+        double[] pressure = new double[16];
+        double[] a = new double[16];
+        double[] b = new double[16];
+
+        if (gf == null){
+            gf = gfLow;
+        }
+
+        for (int i = 0; i < 16; i++){
+            pressure[i] = schreinerPressure[i] + startP_he;
+            a[i] = (ZHL16BGF.N2_A[i] * schreinerPressure[i] + ZHL16BGF.He_A[i] * startP_he) / pressure[i];
+            b[i] = (ZHL16BGF.N2_B[i] * schreinerPressure[i] + ZHL16BGF.He_B[i] * startP_he) / pressure[i];
+            p_l[i] = buhlmannEquation(pressure[i], a[i], b[i], gf);
+        }
+
+        return p_l;
+    }
+
     public static double[] buhlmannP_l(double[] schreinerPressure){
         double[] p_l = new double[16];
         double[] pressure = new double[16];
         double[] a = new double[16];
         double[] b = new double[16];
+
 
         for (int i = 0; i < 16; i++){
             pressure[i] = schreinerPressure[i] + startP_he;
@@ -49,13 +71,80 @@ public class Buhlmann {
         return p_l;
     }
 
+
+
     /**
      * Calculates the ascent ceiling in a tissue compartment
      * P_l=(P−A∗gf)/(gf/B+1.0−gf)
      * where p_l is the ascent ceiling
      */
+    public static double buhlmannEquation(double pressureN2, double pressureHe, double n2A, double n2B, double heA, double heB, double gf){
+        double pressure, a, b;
+
+        pressure = pressureN2 + pressureHe;
+        a = (n2A * pressureN2 + heA * pressureHe) / pressure;
+        b = (n2B * pressureN2 + heB * pressureHe) / pressure;
+
+        return buhlmannEquation(pressure, a, b, gf);
+    }
     public static double buhlmannEquation(double pressure, double coefA, double coefB, double gf){
         return (pressure - coefA * gf)/(gf / coefB + 1 -gf);
+    }
+
+    /**
+     * Calculate:
+     * - pressure of the ascent ceiling of a diver
+     * - depth of first decompression stop: a diver cannot ascent from the bottom shallower than ascent ceiling
+     * - length of decompression stop: a diver cannot ascent from decompression stop until depth of ascent ceiling decreases
+     */
+    public static void ceilingLimit(double[][] model, Double gf){
+        double gradientFactor;
+        double[] p_l;
+
+        if (gf == null){
+            System.out.println("It's null");
+            gradientFactor = gfLow;
+        } else {
+            System.out.println("It's not null");
+            gradientFactor = gf;
+        }
+        System.out.println("gf: " + gradientFactor);
+        gf_limit(gradientFactor, Tissues.ZHL16CTissues);
+        p_l = buhlmannP_l();
+
+    }
+
+    public static void gf_limit(Double gf, double[][] decompressionModel){
+
+        if (gf == null){
+            gf = gfLow;
+        }
+        if (gf < 0 || gf >= 1.5){
+            gf = gfLow;
+        }
+
+        if (decompressionModel == Tissues.ZHL16CTissues){
+            buhlmannEquation(startP_N2, startP_he, ZHL16CGF.N2_A)
+        }
+
+    }
+
+    /** Dives are planned using ZH-L16B-GF since this is what's used for dive tables*/
+    public static Map<String, double[]> planDive(){
+        Map<String, double[]> plan = new HashMap<>();
+        double[] descentPressure;
+        double[] divePressure;
+        double[] ascentPressure;
+
+        descentPressure = planDescent(0, 30, 20, ZHL16BGF.N2_halfLife);
+        divePressure = planDive(30, 20, descentPressure, ZHL16BGF.N2_halfLife);
+        ascentPressure = planAscent(30, 10, 10, divePressure, ZHL16BGF.N2_halfLife);
+
+        plan.put("descent", descentPressure);
+        plan.put("dive", divePressure);
+        plan.put("ascent", ascentPressure);
+
+        return plan;
     }
 
     /**
@@ -154,38 +243,12 @@ public class Buhlmann {
         return pressure;
     }
 
-    /**
-     * Calculate:
-     * - pressure of the ascent ceiling of a diver
-     * - depth of first decompression stop: a diver cannot ascent from the bottom shallower than ascent ceiling
-     * - length of decompression stop: a diver cannot ascent from decompression stop until depth of ascent ceiling decreases
-     */
-    public static void ceilingLimit(){ }
-
-    /** Dives are planned using ZH-L16B-GF since this is what's used for dive tables*/
-    public static Map<String, double[]> planDive(){
-        Map<String, double[]> plan = new HashMap<>();
-        double[] descentPressure;
-        double[] divePressure;
-        double[] ascentPressure;
-
-        descentPressure = planDescent(0, 30, 20, ZHL16BGF.N2_halfLife);
-        divePressure = planDive(30, 20, descentPressure, ZHL16BGF.N2_halfLife);
-        ascentPressure = planAscent(30, 10, 10, divePressure, ZHL16BGF.N2_halfLife);
-
-        plan.put("descent", descentPressure);
-        plan.put("dive", divePressure);
-        plan.put("ascent", ascentPressure);
-
-        return plan;
-    }
-
     public static void main(String args[]){
         // Planning a dive
         Map<String, double[]> plan = new HashMap<>();
         plan = planDive();
 
-        System.out.println("For the first compartment");
+        System.out.println("For the first compartment:");
         System.out.println("Descent pressure: " + plan.get("descent")[0]);
         System.out.println("Dive pressure: " + plan.get("dive")[0]);
         System.out.println("Ascent pressure: " + plan.get("ascent")[0]);
