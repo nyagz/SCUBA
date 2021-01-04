@@ -15,9 +15,9 @@ public class Buhlmann {
 
     public static final double f_gas = 0.68; // EAN32
 
-    // gf
-    public static double gfLow = 0.3;
-    public static double gfHigh = 0.85;
+    // Gradient factors
+    public static final double gfLow = 0.3;
+    public static final double gfHigh = 0.85;
 
     /**
      * Used to calculate inert gas pressure in a tissue compartment
@@ -71,22 +71,31 @@ public class Buhlmann {
         return p_l;
     }
 
-
-
     /**
      * Calculates the ascent ceiling in a tissue compartment
      * P_l=(P−A∗gf)/(gf/B+1.0−gf)
      * where p_l is the ascent ceiling
      */
-    public static double buhlmannEquation(double pressureN2, double pressureHe, double n2A, double n2B, double heA, double heB, double gf){
-        double pressure, a, b;
+    public static double[] buhlmannEquation(double pressureN2, double pressureHe, double[] n2A, double[] n2B, double[] heA, double[] heB, Double gf){
+        double pressure;
+        double[] a = new double[16];
+        double[] b = new double[16];
+        double[] buhlmann = new double[16];
+
+        if (gf == null){
+            gf = gfLow;
+        }
 
         pressure = pressureN2 + pressureHe;
-        a = (n2A * pressureN2 + heA * pressureHe) / pressure;
-        b = (n2B * pressureN2 + heB * pressureHe) / pressure;
+        for (int i = 0; i < 16; i++){
+            a[i] = (n2A[i] * pressureN2 + heA[i] * pressureHe) / pressure;
+            b[i] = (n2B[i] * pressureN2 + heB[i] * pressureHe) / pressure;
+            buhlmann[i] = buhlmannEquation(pressure, a[i], b[i], gf);
+        }
 
-        return buhlmannEquation(pressure, a, b, gf);
+        return buhlmann;
     }
+
     public static double buhlmannEquation(double pressure, double coefA, double coefB, double gf){
         return (pressure - coefA * gf)/(gf / coefB + 1 -gf);
     }
@@ -110,21 +119,23 @@ public class Buhlmann {
         }
         System.out.println("gf: " + gradientFactor);
         gf_limit(gradientFactor, Tissues.ZHL16CTissues);
-        p_l = buhlmannP_l();
+        // p_l = buhlmannP_l();
 
     }
 
     public static void gf_limit(Double gf, double[][] decompressionModel){
-
         if (gf == null){
             gf = gfLow;
-        }
-        if (gf < 0 || gf >= 1.5){
-            gf = gfLow;
+        } else {
+            if (gf < 0 || gf >= 1.5){
+                gf = gfLow;
+            }
         }
 
         if (decompressionModel == Tissues.ZHL16CTissues){
-            buhlmannEquation(startP_N2, startP_he, ZHL16CGF.N2_A)
+            buhlmannEquation(startP_N2, startP_he, ZHL16CGF.N2_A, ZHL16CGF.N2_B, ZHL16CGF.He_A, ZHL16CGF.He_B, null);
+        } else {
+            if (decompressionModel == Tissues.ZHL16BTissues)
         }
 
     }
