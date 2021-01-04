@@ -30,41 +30,10 @@ public class Buhlmann {
 
     /**
      *
-     * @param schreinerPressure
+     * @param schreinerPressure - pressures in each compartment from schreiner's equation
      * @return
      */
     public static double[] buhlmannP_l(double[] schreinerPressure){
-        List<Map<String, Double>> variables = new ArrayList<Map<String, Double>>();
-        Map<String, Double> tempVariables = new HashMap<>();
-
-        // double initialPressure = startP_N2 * (1 - waterVapourPressure);
-        // double pressure, a, b;
-//
-        // pressure = startP_N2 + startP_he;
-        // tempVariables.put("pressure", 0.0);
-        // tempVariables.put("A", 0.0);
-        // tempVariables.put("B", 0.0);
-//
-        // for (int i = 0; i < ZHL16BGF.N2_A.length; i++){
-        //     a = (ZHL16BGF.N2_A[i] * startP_N2 + ZHL16BGF.He_A[i] * startP_he) / pressure;
-        //     b = (ZHL16BGF.N2_B[i] * startP_N2 + ZHL16BGF.He_B[i] * startP_he) / pressure;
-        //     tempVariables.put("pressure", pressure);
-        //     tempVariables.put("A", a);
-        //     tempVariables.put("B", b);
-        //     variables.add(tempVariables);
-        //     System.out.println("Variables: " + variables);
-        //     System.out.println("Temp: " + tempVariables);
-        // }
-//
-        // System.out.println("Before: " + variables);
-        // variables.remove(0);
-        // System.out.println("After: " + variables);
-        // System.out.println("Pressure: " + variables[0].get("pressure"));
-        // System.out.println("A: " + variables[0].get("A"));
-        // System.out.println("B: " + variables[0].get("B"));
-        // System.out.println();
-
-        ////////////////////////////////////////////////////////
         double[] p_l = new double[16];
         double[] pressure = new double[16];
         double[] a = new double[16];
@@ -76,6 +45,7 @@ public class Buhlmann {
             b[i] = (ZHL16BGF.N2_B[i] * schreinerPressure[i] + ZHL16BGF.He_B[i] * startP_he) / pressure[i];
             p_l[i] = buhlmannEquation(pressure[i], a[i], b[i], gfLow);
         }
+
         return p_l;
     }
 
@@ -212,7 +182,6 @@ public class Buhlmann {
 
     public static void main(String args[]){
         // Planning a dive
-        // Dives are planned using ZH-L16B-GF since this is what's used for dive tables
         Map<String, double[]> plan = new HashMap<>();
         plan = planDive();
 
@@ -226,9 +195,9 @@ public class Buhlmann {
         double[] ascentTest = buhlmannP_l(plan.get("ascent"));
 
         System.out.println();
-        System.out.println("Descent answer: " + descentTest[0]);
-        System.out.println("Dive answer: " + diveTest[0]);
-        System.out.println("Ascent answer: " + ascentTest[0]);
+        System.out.println("Descent buhlmann: " + descentTest[0]);
+        System.out.println("Dive buhlmann: " + diveTest[0]);
+        System.out.println("Ascent buhlmann: " + ascentTest[0]);
 
         // int compartment = 1;
         // for (double p: ascentPressure){
