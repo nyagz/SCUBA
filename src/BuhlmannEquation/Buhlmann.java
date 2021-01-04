@@ -75,8 +75,8 @@ public class Buhlmann {
         double[] pressure = new double[16];
 
         double p_i, p_alv, r;
-        int p_abs = (int) (surfacePressure + (initialDepth / 10));
-        int p_rate = (int) (rate / 10); //Should be positive
+        int p_abs = (surfacePressure + (initialDepth / 10));
+        int p_rate = (rate / 10); //Should be positive
         double t = (double) (finalDepth - initialDepth) / rate;
 
         p_i = startP_N2 * (surfacePressure - waterVapourPressure);
@@ -107,7 +107,7 @@ public class Buhlmann {
         double[] pressure = new double[16];
         double[] k = new double[16];
 
-        int p_abs = 1 + ((int) depth / 10);
+        int p_abs = 1 + (depth / 10);
         double p_alv;
 
         p_alv = f_gas * (p_abs - waterVapourPressure);
@@ -133,12 +133,12 @@ public class Buhlmann {
         double[] pressure = new double[16];
         double[] k = new double[16];
 
-        int p_abs = surfacePressure + ((int) initialDepth / 10);
+        int p_abs = surfacePressure + (initialDepth / 10);
         double p_alv, r;
 
         double t = (double) (initialDepth - finalDepth) / rate;
 
-        int p_rate = (int) (rate / 10); //Should be negative
+        int p_rate = rate / 10; //Should be negative
         if (p_rate >= 0){
             p_rate = p_rate * -1;
         }
