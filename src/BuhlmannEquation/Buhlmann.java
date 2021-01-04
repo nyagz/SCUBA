@@ -1,8 +1,6 @@
 package BuhlmannEquation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -25,8 +23,11 @@ public class Buhlmann {
      * P = P_alv + R * (t - 1/k) - (P_alv - P_i - R/k) * e^(-k*t)
      * Change of 10m depth = change of 1 bar pressure
      */
-    public static double schreiner(double initialPressure, double inspiredGasPressure, double exposureTime, double gasDecayConstant, double rateChangeGas){
-        return inspiredGasPressure + rateChangeGas * (exposureTime - 1 / gasDecayConstant) - (inspiredGasPressure - initialPressure - rateChangeGas/gasDecayConstant) * Math.exp(-1 * gasDecayConstant * exposureTime);
+    public static double schreiner(double initialPressure, double inspiredGasPressure, double exposureTime,
+                                   double gasDecayConstant, double rateChangeGas){
+        return inspiredGasPressure + rateChangeGas * (exposureTime - 1 / gasDecayConstant) -
+                (inspiredGasPressure - initialPressure - rateChangeGas/gasDecayConstant) *
+                        Math.exp(-1 * gasDecayConstant * exposureTime);
     }
 
     /**
@@ -48,7 +49,7 @@ public class Buhlmann {
             pressure[i] = schreinerPressure[i] + startP_he;
             a[i] = (ZHL16BGF.N2_A[i] * schreinerPressure[i] + ZHL16BGF.He_A[i] * startP_he) / pressure[i];
             b[i] = (ZHL16BGF.N2_B[i] * schreinerPressure[i] + ZHL16BGF.He_B[i] * startP_he) / pressure[i];
-            p_l[i] = buhlmannEquation(pressure[i], a[i], b[i], gf);
+            p_l[i] = buhlmannGfLimit(pressure[i], a[i], b[i], gf);
         }
 
         return p_l;
@@ -65,7 +66,7 @@ public class Buhlmann {
             pressure[i] = schreinerPressure[i] + startP_he;
             a[i] = (ZHL16BGF.N2_A[i] * schreinerPressure[i] + ZHL16BGF.He_A[i] * startP_he) / pressure[i];
             b[i] = (ZHL16BGF.N2_B[i] * schreinerPressure[i] + ZHL16BGF.He_B[i] * startP_he) / pressure[i];
-            p_l[i] = buhlmannEquation(pressure[i], a[i], b[i], gfLow);
+            p_l[i] = buhlmannGfLimit(pressure[i], a[i], b[i], gfLow);
         }
 
         return p_l;
@@ -76,27 +77,30 @@ public class Buhlmann {
      * P_l=(P−A∗gf)/(gf/B+1.0−gf)
      * where p_l is the ascent ceiling
      */
-    public static double[] buhlmannEquation(double pressureN2, double pressureHe, double[] n2A, double[] n2B, double[] heA, double[] heB, Double gf){
-        double pressure;
+    public static double[] buhlmannGfLimit(double pressureN2, double pressureHe, double[] n2A, double[] n2B,
+                                           double[] heA, double[] heB, Double gf){
+        double pressure, gradientFactor;
         double[] a = new double[16];
         double[] b = new double[16];
         double[] buhlmann = new double[16];
 
         if (gf == null){
-            gf = gfLow;
+            gradientFactor = gfLow;
+        } else {
+            gradientFactor = gf;
         }
 
         pressure = pressureN2 + pressureHe;
         for (int i = 0; i < 16; i++){
             a[i] = (n2A[i] * pressureN2 + heA[i] * pressureHe) / pressure;
             b[i] = (n2B[i] * pressureN2 + heB[i] * pressureHe) / pressure;
-            buhlmann[i] = buhlmannEquation(pressure, a[i], b[i], gf);
+            buhlmann[i] = buhlmannGfLimit(pressure, a[i], b[i], gradientFactor);
         }
 
         return buhlmann;
     }
 
-    public static double buhlmannEquation(double pressure, double coefA, double coefB, double gf){
+    public static double buhlmannGfLimit(double pressure, double coefA, double coefB, double gf){
         return (pressure - coefA * gf)/(gf / coefB + 1 -gf);
     }
 
@@ -106,38 +110,45 @@ public class Buhlmann {
      * - depth of first decompression stop: a diver cannot ascent from the bottom shallower than ascent ceiling
      * - length of decompression stop: a diver cannot ascent from decompression stop until depth of ascent ceiling decreases
      */
-    public static void ceilingLimit(double[][] model, Double gf){
+    public static double[] ceilingLimit(String model, Double gf, double[] pressure){
         double gradientFactor;
         double[] p_l;
 
         if (gf == null){
-            System.out.println("It's null");
             gradientFactor = gfLow;
         } else {
-            System.out.println("It's not null");
             gradientFactor = gf;
         }
-        System.out.println("gf: " + gradientFactor);
-        gf_limit(gradientFactor, Tissues.ZHL16CTissues);
-        // p_l = buhlmannP_l();
+        p_l = gf_limit(gradientFactor, model, pressure);
 
+        return p_l;
     }
 
-    public static void gf_limit(Double gf, double[][] decompressionModel){
+    public static double[] gf_limit(Double gf, String decompressionModel, double[] pressure){
+        double[] result = new double[16];
+        double gradientFactor;
+
         if (gf == null){
-            gf = gfLow;
+            gradientFactor = gfLow;
         } else {
             if (gf < 0 || gf >= 1.5){
-                gf = gfLow;
+                gradientFactor = gfLow;
+            } else {
+                gradientFactor = gf;
             }
         }
 
-        if (decompressionModel == Tissues.ZHL16CTissues){
-            buhlmannEquation(startP_N2, startP_he, ZHL16CGF.N2_A, ZHL16CGF.N2_B, ZHL16CGF.He_A, ZHL16CGF.He_B, null);
+        if (decompressionModel == "ZHL16C"){
+            result = buhlmannGfLimit(startP_N2, startP_he, ZHL16CGF.N2_A, ZHL16CGF.N2_B, ZHL16CGF.He_A, ZHL16CGF.He_B,
+                    gradientFactor);
         } else {
-            if (decompressionModel == Tissues.ZHL16BTissues)
+            if (decompressionModel == "ZHL16B"){
+                result = buhlmannGfLimit(startP_N2, startP_he, ZHL16BGF.N2_A, ZHL16BGF.N2_B, ZHL16BGF.He_A,
+                        ZHL16BGF.He_B, gradientFactor);
+            }
         }
 
+        return result;
     }
 
     /** Dives are planned using ZH-L16B-GF since this is what's used for dive tables*/
@@ -193,7 +204,6 @@ public class Buhlmann {
         return pressure;
     }
 
-
     /**
      * Calculates the pressure while diving at the deepest point of the dive
      * p_rate should be zero?
@@ -229,7 +239,8 @@ public class Buhlmann {
      * @param t_hl - inert gas half life
      * @return
      */
-    public static double[] planAscent(int initialDepth, int finalDepth, int rate, double[] initialPressure, double[] t_hl){
+    public static double[] planAscent(int initialDepth, int finalDepth, int rate, double[] initialPressure,
+                                      double[] t_hl){
         double[] pressure = new double[16];
         double[] k = new double[16];
 
