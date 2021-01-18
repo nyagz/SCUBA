@@ -10,6 +10,7 @@ public class Buhlmann {
     public static final double startP_N2 = 0.7902; // Starting pressure of N2
     public static final double waterVapourPressure = 0.0627;
     public static final int surfacePressure = 1;
+    public static final double surface_Pressure = 0.09985; //Check which value should be being used
 
     public static final double f_gas = 0.68; // EAN32
 
@@ -35,15 +36,11 @@ public class Buhlmann {
      * @param schreinerPressure - pressures in each compartment from schreiner's equation
      * @return
      */
-    public static double[] buhlmannP_l(double[] schreinerPressure, Double gf){
+    public static double[] buhlmannP_l(double[] schreinerPressure, double gf){
         double[] p_l = new double[16];
         double[] pressure = new double[16];
         double[] a = new double[16];
         double[] b = new double[16];
-
-        if (gf == null){
-            gf = gfLow;
-        }
 
         for (int i = 0; i < 16; i++){
             pressure[i] = schreinerPressure[i] + startP_he;
