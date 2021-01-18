@@ -1,11 +1,11 @@
-package Buhlmann;
+package BuhlmannEquation;
 
 
 /**
  * Calculates dive steps required to ascent from current depth to the surface
  */
 public class Ascent {
-    public static final int surfacePressure = ZHL16.surfacePressure;
+    public static final int surfacePressure = Buhlmann.surfacePressure;
     public static final int ascentRate = 10;
     public static final int descentRate = 20;
     public static final double meterToBar = 0.09985;
@@ -15,8 +15,8 @@ public class Ascent {
     // TODO: Complete
     // Checks if the dive is a non-decompression Dive (no deco stops needed)
     public static int ndlDive(double pressure){
-        double gradientFactor = ZHL16.gfHigh;
-        double p = pressure - ZHL16.surfacePressure;
+        double gradientFactor = Buhlmann.gfHigh;
+        double p = pressure - Buhlmann.surfacePressure;
         double time = p / ascentRate / meterToBar;
         return 0;
     }

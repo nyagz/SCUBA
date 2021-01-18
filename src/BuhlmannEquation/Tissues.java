@@ -1,4 +1,4 @@
-package Buhlmann;
+package BuhlmannEquation;
 
 public class Tissues {
     /**
