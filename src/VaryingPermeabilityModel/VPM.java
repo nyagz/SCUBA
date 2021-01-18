@@ -1,6 +1,6 @@
 package VaryingPermeabilityModel;
 
-import static BuhlmannEquation.Buhlmann.*;
+import static Buhlmann.ZHL16.*;
 
 public class VPM {
 

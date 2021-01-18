@@ -1,4 +1,4 @@
-package BuhlmannEquation;
+package Buhlmann;
 
 public enum DiveStage {
     START,
