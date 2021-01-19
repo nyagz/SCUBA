@@ -6,13 +6,11 @@ public class Run{
     public static void plan(double maxDepth, int bottomTime){
     }
 
-    //TODO: Function to initialise gases in tissue compartments
-    //Initialises pressure assuming the surface pressure is 1
+    //Initialises pressures in each compartment assuming the surface pressure is 1
     public static CompartmentData initialisePressure(){
         double pN2 = ZHL16.startP_N2 * (ZHL16.surfacePressure - ZHL16.waterVapourPressure);
         double pHe = ZHL16.startP_he;
         TissueLoader[] tissues = new TissueLoader[16];
-        CompartmentData data;
 
         for (int i = 0; i < tissues.length; i++){
             tissues[i] = new TissueLoader(pN2, pHe);
@@ -20,11 +18,11 @@ public class Run{
         return new CompartmentData(tissues, ZHL16.gfLow);
     }
 
+    //Initialises pressures in each compartment
     public static CompartmentData initialisePressure(double sp){
         double pN2 = ZHL16.startP_N2 * (sp - ZHL16.waterVapourPressure);
         double pHe = ZHL16.startP_he;
         TissueLoader[] tissues = new TissueLoader[16];
-        CompartmentData data;
 
         for (int i = 0; i < tissues.length; i++){
             tissues[i] = new TissueLoader(pN2, pHe);
@@ -34,10 +32,6 @@ public class Run{
     }
 
     public static void main(String args[]){
-        System.out.println("Ahhh shit here we go again");
-        System.out.println("*Insert walking GTA dude here*");
-        System.out.println();
-
-        CompartmentData data = initialisePressure(1);
+        Tests.testingDiveProfile();
     }
 }

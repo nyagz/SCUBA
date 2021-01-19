@@ -44,71 +44,48 @@ public class ZHL16 {
     public static final double meterToBar = 0.09985;
 
     public static boolean lastStop6m = false;
-    // public static DecoStopTable deco_table = new DecoStopTable();
     public static ArrayList<DecoStop> deco_stops = new ArrayList<>();
 
-    // Loads tissue compartments with gas specified in the gasMix
-    public static TissueLoader tissueLoaders(double absolutePressure, GasMix gas, double pressureRateChange, double time){
-        double n2_loader, he_loader;
-        n2_loader = tissueLoader(absolutePressure, gas.getN2() / 100, pressureRateChange, ZHL16BGF.N2_halfLife, time);
-        he_loader = tissueLoader(absolutePressure, gas.getHe() / 100, pressureRateChange, ZHL16BGF.He_halfLife, time);
-        return new TissueLoader(n2_loader, he_loader);
+    public static CompartmentData loadTissues(double absolutePressure, double time, GasMix gas, double pressureRate,
+                                              CompartmentData initialPressureData){
+        TissueLoader[] loaders = tissueLoaders(absolutePressure, gas, pressureRate, time,
+                initialPressureData.getTissues());
+
+        return new CompartmentData(loaders, initialPressureData.getGf());
     }
 
-    // TODO: Sort out the return
-    // Function to load tissue compartments with inert gas using Schreiner's equation
-    public static double tissueLoader(double absolutePressure, double f_gas, double pressureRateChange, double[] halfLife, double time){
-        double[] k = new double[16];
-        double p_alv, r, p_i;
+    // Loads tissue compartments with gas specified in the gasMix
+    public static TissueLoader[] tissueLoaders(double absolutePressure, GasMix gas, double pressureRateChange,
+                                               double time, TissueLoader[] initialPressure){
+        double n2Loader, heLoader;
 
-        p_i = startP_N2 * (surfacePressure - waterVapourPressure);
+        TissueLoader[] result = new TissueLoader[16];
+
+        for (int i = 0; i < result.length; i++){
+            n2Loader = tissueLoader(absolutePressure, (double) gas.getN2() / 100, pressureRateChange,
+                    ZHL16BGF.N2_halfLife[i], time, initialPressure[i].getN2Loader());
+            heLoader = tissueLoader(absolutePressure, (double) gas.getHe() / 100, pressureRateChange,
+                    ZHL16BGF.He_halfLife[i], time, initialPressure[i].getHeLoader());
+            result[i] = new TissueLoader(n2Loader, heLoader);
+        }
+        return result;
+    }
+
+    // Function to load tissue compartments with inert gas using Schreiner's equation
+    public static double tissueLoader(double absolutePressure, double f_gas, double pressureRateChange, double halfLife,
+                                      double time, double initialPressure){
+        double p_alv, r, k;
+
         p_alv = f_gas * (absolutePressure - waterVapourPressure);
         // k
         r = f_gas * pressureRateChange;
-        for (int i = 0; i < halfLife.length; i++){
-            k[i] = Math.log(2) / halfLife[i];
-            Equations.schreiner(p_i, p_alv, time, k[i], r);
-        }
+        k = Math.log(2) / halfLife;
 
-        return 0;
-    }
-
-    //TODO: Determine what's being returned and when I need to actually use this
-    public static void loadTissues(double absolutePressure, double time, GasMix gas, double pressureRate, Object model){
-        double n2Loader, heLoader;
-        TissueLoader tissues = tissueLoaders(absolutePressure, gas, pressureRate, time);
-        n2Loader = tissues.getN2Loader();
-        heLoader = tissues.getHeLoader();
-
-        //return something
-    }
-
-    // FIXME: Delete later
-    // Just to check I know how to code tbh
-    public static void testingDecoStop(){
-
-        DecoStop test = new DecoStop(3,2);
-        System.out.println("Checking it's empty");
-        if (deco_stops.size() == 0){
-            System.out.println("It's empty, good");
-        } else{
-            System.out.println("Oh no, it didn't work");
-        }
-
-        deco_stops.add(test);
-        DecoStop test2 = new DecoStop(2, 3);
-        deco_stops.add(test2);
-        System.out.println("Total length of decompression stops: " + DecoStop.totalDecoStops(deco_stops));
-        System.out.println("Added");
-        System.out.println("New total number of decompression stops: " + deco_stops.size());
-
-        DecoStop firstStop = deco_stops.get(0);
-        System.out.println("Depth of first stop: " + firstStop.getDepth());
-        System.out.println("Min of first stop: " + firstStop.getMin());
+        return Equations.schreiner(initialPressure, p_alv, time, k, r);
     }
 
     public static void main(String args[]){
-        testingDecoStop();
+        Tests.testingDecoStop();
 
         // if(Equations.buhlmannEquation(0.74065446, 0, 1.1696, 0.5578, 0, 0, 0.3) == 0.31488600902007363){
         //     System.out.println("It works!");
