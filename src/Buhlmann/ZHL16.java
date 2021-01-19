@@ -1,8 +1,118 @@
 package Buhlmann;
 
-public class ZHL16 {
+import javafx.util.Pair;
 
-    public static void main (String args[]){
-        System.out.println("Ahhh shit here we go again");
+import java.util.ArrayList;
+
+public class ZHL16 {
+    /** From BuhlmannEquation.Buhlmann
+    public static final double startP_he = 0;
+    public static final double startP_N2 = 0.7902; // Starting pressure of N2
+    public static final double waterVapourPressure = 0.0627;
+    public static final int surfacePressure = 1;
+    public static final double surface_Pressure = 0.09985; //Check which value should be being used
+
+    public static final double f_gas = 0.68; // EAN32
+
+    // Gradient factors
+    public static final double gfLow = 0.3;
+    public static final double gfHigh = 0.85;
+     */
+
+    /** From BuhlmannEquation.Ascent
+     * public static final int surfacePressure = Buhlmann.surfacePressure;
+     *     public static final int ascentRate = 10;
+     *     public static final int descentRate = 20;
+     *     public static final double meterToBar = 0.09985;
+     *
+     *     public static boolean lastStop6m = false;
+     */
+
+    public static final double waterVapourPressure = 0.0627;
+    public static final int surfacePressure = 1;
+    public static final double startP_he = 0;
+    public static final double startP_N2 = 0.7902;
+
+    public static final double f_gas = 0.68; // EAN32
+
+    // Gradient factors
+    public static final double gfLow = 0.3;
+    public static final double gfHigh = 0.85;
+
+    public static final int ascentRate = 10;
+    public static final int descentRate = 20;
+    public static final double meterToBar = 0.09985;
+
+    public static boolean lastStop6m = false;
+    public static ArrayList<DecoStop> deco_stops = new ArrayList<>();
+
+    public static CompartmentData loadTissues(double absolutePressure, double time, GasMix gas, double pressureRate,
+                                              CompartmentData initialPressureData){
+        TissueLoader[] loaders = tissueLoaders(absolutePressure, gas, pressureRate, time,
+                initialPressureData.getTissues());
+
+        return new CompartmentData(loaders, initialPressureData.getGf());
     }
+
+    // Loads tissue compartments with gas specified in the gasMix
+    public static TissueLoader[] tissueLoaders(double absolutePressure, GasMix gas, double pressureRateChange,
+                                               double time, TissueLoader[] initialPressure){
+        double n2Loader, heLoader;
+
+        TissueLoader[] result = new TissueLoader[16];
+
+        for (int i = 0; i < result.length; i++){
+            n2Loader = tissueLoader(absolutePressure, (double) gas.getN2() / 100, pressureRateChange,
+                    ZHL16BGF.N2_halfLife[i], time, initialPressure[i].getN2Loader());
+            heLoader = tissueLoader(absolutePressure, (double) gas.getHe() / 100, pressureRateChange,
+                    ZHL16BGF.He_halfLife[i], time, initialPressure[i].getHeLoader());
+            result[i] = new TissueLoader(n2Loader, heLoader);
+        }
+        return result;
+    }
+
+    // Function to load tissue compartments with inert gas using Schreiner's equation
+    public static double tissueLoader(double absolutePressure, double f_gas, double pressureRateChange, double halfLife,
+                                      double time, double initialPressure){
+        double p_alv, r, k;
+        p_alv = f_gas * (absolutePressure - waterVapourPressure);
+        // k
+        r = f_gas * pressureRateChange;
+        k = Math.log(2) / halfLife;
+        return Equations.schreiner(initialPressure, p_alv, time, k, r);
+    }
+
+    // Calculates pressure of the ascent ceiling
+    public static double ascentCeiling(CompartmentData data){
+        double[] compartments = tissueCeiling(data);
+        double ceiling = compartments[0];
+        for(double p: compartments){
+            ceiling = Math.max(ceiling, p);
+        }
+        return ceiling;
+    }
+
+    // Calculates ascent ceiling for each tissue
+    public static double[] tissueCeiling(CompartmentData data){
+        TissueLoader[] tissues = data.getTissues();
+        double[] ceilings = new double[16];
+        for (int i = 0; i < tissues.length; i++){
+            ceilings[i] = Equations.buhlmannEquation(tissues[i].getN2Loader(), tissues[i].getHeLoader(),
+                    ZHL16BGF.N2_A[i], ZHL16BGF.N2_B[i], ZHL16BGF.He_A[i], ZHL16BGF.He_B[i], data.getGf());
+        }
+        return ceilings;
+    }
+
+    public static void main(String args[]){
+        Tests.testingDecoStop();
+
+        // if(Equations.buhlmannEquation(0.74065446, 0, 1.1696, 0.5578, 0, 0, 0.3) == 0.31488600902007363){
+        //     System.out.println("It works!");
+        // } else {
+        //     System.out.println("It no works :(");
+        // }
+
+    }
+
+
 }

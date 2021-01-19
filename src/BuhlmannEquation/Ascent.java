@@ -12,7 +12,6 @@ public class Ascent {
 
     public static boolean lastStop6m = false;
 
-    // TODO: Complete
     // Checks if the dive is a non-decompression Dive (no deco stops needed)
     public static int ndlDive(double pressure){
         double gradientFactor = Buhlmann.gfHigh;
@@ -21,11 +20,9 @@ public class Ascent {
         return 0;
     }
 
-    // TODO: Complete
     // Calculates dive steps needed to ascent from current depth to the surface
     public static void diveAscent(){ }
 
-    // TODO: Complete
     // Calculate depth of first deco stop
     public static void firstStop(double currentDepth, double targetDepth, double[] pressures){
         double ceiling = ceilingLimit(pressures);
@@ -33,7 +30,6 @@ public class Ascent {
         ceiling = Math.max(ceiling, targetDepth);
     }
 
-    // TODO: Complete
     // Calculates the length of the decompression stop
     public static int decoStopLength(){
         int t = 0;
