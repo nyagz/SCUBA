@@ -75,13 +75,32 @@ public class ZHL16 {
     public static double tissueLoader(double absolutePressure, double f_gas, double pressureRateChange, double halfLife,
                                       double time, double initialPressure){
         double p_alv, r, k;
-
         p_alv = f_gas * (absolutePressure - waterVapourPressure);
         // k
         r = f_gas * pressureRateChange;
         k = Math.log(2) / halfLife;
-
         return Equations.schreiner(initialPressure, p_alv, time, k, r);
+    }
+
+    // Calculates pressure of the ascent ceiling
+    public static double ascentCeiling(CompartmentData data){
+        double[] compartments = tissueCeiling(data);
+        double ceiling = compartments[0];
+        for(double p: compartments){
+            ceiling = Math.max(ceiling, p);
+        }
+        return ceiling;
+    }
+
+    // Calculates ascent ceiling for each tissue
+    public static double[] tissueCeiling(CompartmentData data){
+        TissueLoader[] tissues = data.getTissues();
+        double[] ceilings = new double[16];
+        for (int i = 0; i < tissues.length; i++){
+            ceilings[i] = Equations.buhlmannEquation(tissues[i].getN2Loader(), tissues[i].getHeLoader(),
+                    ZHL16BGF.N2_A[i], ZHL16BGF.N2_B[i], ZHL16BGF.He_A[i], ZHL16BGF.He_B[i], data.getGf());
+        }
+        return ceilings;
     }
 
     public static void main(String args[]){

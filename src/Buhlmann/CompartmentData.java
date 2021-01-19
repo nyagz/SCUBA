@@ -16,4 +16,8 @@ public class CompartmentData {
     public double getGf() {
         return gf;
     }
+
+    public void setGf(double gf){
+        this.gf = gf;
+    }
 }

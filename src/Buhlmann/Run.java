@@ -23,15 +23,14 @@ public class Run{
         double pN2 = ZHL16.startP_N2 * (sp - ZHL16.waterVapourPressure);
         double pHe = ZHL16.startP_he;
         TissueLoader[] tissues = new TissueLoader[16];
-
         for (int i = 0; i < tissues.length; i++){
             tissues[i] = new TissueLoader(pN2, pHe);
         }
-
         return new CompartmentData(tissues, ZHL16.gfLow);
     }
 
     public static void main(String args[]){
         Tests.testingDiveProfile();
+        Tests.testingCeiling();
     }
 }

@@ -27,4 +27,14 @@ public class Tests {
         CompartmentData data = Run.initialisePressure(1);
         data = ZHL16.loadTissues(1, 1.5, Gases.EAN32, 2, data);
     }
+
+    public static void testingCeiling(){
+        CompartmentData data = Run.initialisePressure(1);
+        if(ZHL16.ascentCeiling(data) == 0.6636871173176457){
+            System.out.println("Yay, it works!");
+        } else {
+            System.out.println("Oh no :(");
+        }
+        double[] newCeilings = ZHL16.tissueCeiling(data);
+    }
 }
