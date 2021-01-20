@@ -10,7 +10,7 @@ public class Equations {
     }
 
     public static double buhlmannEquation(double pressureN2, double pressureHe, double n2A, double n2B,
-                                        double heA, double heB, Double gf){
+                                          double heA, double heB, Double gf){
         double pressure, gradientFactor, a, b, p_l;
         if (gf == null){
             gradientFactor = ZHL16.gfLow;

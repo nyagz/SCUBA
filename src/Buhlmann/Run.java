@@ -1,36 +1,33 @@
 package Buhlmann;
 
+import java.util.ArrayList;
+
 public class Run{
+    private static final int ascentRate = 10;
+    private static final int descentRate = 20;
+    private static final double meterToBar = 0.09985;
+    private static boolean lastStop6m = false;
+
+    private ArrayList<GasMix> gasList = new ArrayList<>();
+    private ArrayList<DecoStop> decoStops = new ArrayList<>();
 
     // TODO: Function to plan dive once given the max depth to dive to and time spent at the bottom depth (in minutes)
-    public static void plan(double maxDepth, int bottomTime){
+    public static void plan(double maxDepth, int bottomTime){ }
+
+    // Checks dive steps needed to ascent from the current depth to the surface
+    public static void diveAscent(double absolutePressure, ArrayList<GasMix> gasList){
+        GasMix bottomGas = gasList.get(0);
+        
     }
 
-    //Initialises pressures in each compartment assuming the surface pressure is 1
-    public static CompartmentData initialisePressure(){
-        double pN2 = ZHL16.startP_N2 * (ZHL16.surfacePressure - ZHL16.waterVapourPressure);
-        double pHe = ZHL16.startP_he;
-        TissueLoader[] tissues = new TissueLoader[16];
+    public static void NDL(double absolutePressure, GasMix gas){
 
-        for (int i = 0; i < tissues.length; i++){
-            tissues[i] = new TissueLoader(pN2, pHe);
-        }
-        return new CompartmentData(tissues, ZHL16.gfLow);
     }
-
-    //Initialises pressures in each compartment
-    public static CompartmentData initialisePressure(double sp){
-        double pN2 = ZHL16.startP_N2 * (sp - ZHL16.waterVapourPressure);
-        double pHe = ZHL16.startP_he;
-        TissueLoader[] tissues = new TissueLoader[16];
-        for (int i = 0; i < tissues.length; i++){
-            tissues[i] = new TissueLoader(pN2, pHe);
-        }
-        return new CompartmentData(tissues, ZHL16.gfLow);
-    }
-
     public static void main(String args[]){
         Tests.testingDiveProfile();
+        System.out.println();
         Tests.testingCeiling();
+        System.out.println();
+        Tests.testingDecoStop();
     }
 }

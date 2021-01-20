@@ -3,10 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/CompartmentData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/CompartmentData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/GasMix.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/GasMix.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Gases.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Gases.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Run.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Run.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/CompartmentData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/CompartmentData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/DiveStage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/DivePhase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Equations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Equations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/GasMix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/GasMix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Gases.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Gases.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Run.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Tests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/ZHL16.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/ZHL16.java" afterDir="false" />
@@ -155,46 +160,50 @@
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1368.872@0.0.1368.872" timestamp="1609749189764" />
+    <state width="316" height="466" key="DebuggerActiveHint" timestamp="1611102085065">
+      <screen x="0" y="0" width="1368" height="872" />
+    </state>
+    <state width="316" height="466" key="DebuggerActiveHint/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611102085065" />
     <state x="807" y="194" key="FileChooserDialogImpl" timestamp="1611058482242">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="807" y="194" key="FileChooserDialogImpl/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611058482242" />
-    <state width="1326" height="281" key="GridCell.Tab.0.bottom" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.0.bottom" timestamp="1611104532844">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
+    <state width="1326" height="281" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532844" />
     <state width="639" height="228" key="GridCell.Tab.0.bottom/0.0.1368.872@0.0.1368.872" timestamp="1610997822717" />
-    <state width="1326" height="281" key="GridCell.Tab.0.center" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.0.center" timestamp="1611104532843">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
+    <state width="1326" height="281" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532843" />
     <state width="639" height="228" key="GridCell.Tab.0.center/0.0.1368.872@0.0.1368.872" timestamp="1610997822717" />
-    <state width="1326" height="281" key="GridCell.Tab.0.left" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.0.left" timestamp="1611104532842">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
+    <state width="1326" height="281" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532842" />
     <state width="639" height="228" key="GridCell.Tab.0.left/0.0.1368.872@0.0.1368.872" timestamp="1610997822717" />
-    <state width="1326" height="281" key="GridCell.Tab.0.right" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.0.right" timestamp="1611104532844">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
+    <state width="1326" height="281" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532844" />
     <state width="639" height="228" key="GridCell.Tab.0.right/0.0.1368.872@0.0.1368.872" timestamp="1610997822717" />
-    <state width="1326" height="281" key="GridCell.Tab.1.bottom" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.1.bottom" timestamp="1611104532845">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.1.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
-    <state width="1326" height="281" key="GridCell.Tab.1.center" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.1.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532845" />
+    <state width="1326" height="281" key="GridCell.Tab.1.center" timestamp="1611104532845">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.1.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
-    <state width="1326" height="281" key="GridCell.Tab.1.left" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.1.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532845" />
+    <state width="1326" height="281" key="GridCell.Tab.1.left" timestamp="1611104532844">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.1.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
-    <state width="1326" height="281" key="GridCell.Tab.1.right" timestamp="1611096831078">
+    <state width="1326" height="281" key="GridCell.Tab.1.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532844" />
+    <state width="1326" height="281" key="GridCell.Tab.1.right" timestamp="1611104532845">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state width="1326" height="281" key="GridCell.Tab.1.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611096831078" />
+    <state width="1326" height="281" key="GridCell.Tab.1.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611104532845" />
     <state x="722" y="260" key="com.intellij.ide.util.TipDialog" timestamp="1610887237767">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
@@ -215,15 +224,6 @@
     <state x="348" y="185" width="672" height="678" key="search.everywhere.popup/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611076770299" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Buhlmann/Tests.java</url>
-          <line>37</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="args" />
