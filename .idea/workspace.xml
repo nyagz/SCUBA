@@ -3,17 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/GasMix.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/GasMix.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Gases.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Gases.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Run.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Run.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/DiveStage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/DivePhase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Equations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Equations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/GasMix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/GasMix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Gases.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Gases.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Run.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Tests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/ZHL16.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/ZHL16.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -160,6 +150,10 @@
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1368.872@0.0.1368.872" timestamp="1609749189764" />
+    <state x="415" y="183" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1611109578114">
+      <screen x="0" y="0" width="1368" height="872" />
+    </state>
+    <state x="415" y="183" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611109578114" />
     <state width="316" height="466" key="DebuggerActiveHint" timestamp="1611102085065">
       <screen x="0" y="0" width="1368" height="872" />
     </state>

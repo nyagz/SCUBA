@@ -1,0 +1,37 @@
+package Buhlmann;
+
+public class Step {
+    private DivePhase phase;
+    private double absolutePressure;
+    private double time;
+    private GasMix gas;
+    private CompartmentData data;
+
+    public Step(DivePhase phase, double absolutePressure, double time, GasMix gas, CompartmentData data){
+        this.phase = phase;
+        this.absolutePressure = absolutePressure;
+        this.time = time;
+        this.gas = gas;
+        this.data = data;
+    }
+
+    public DivePhase getPhase(){
+        return phase;
+    }
+
+    public double getAbsolutePressure(){
+        return absolutePressure;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public GasMix getGas() {
+        return gas;
+    }
+
+    public CompartmentData getData() {
+        return data;
+    }
+}

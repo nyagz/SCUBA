@@ -5,28 +5,6 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class ZHL16 {
-    /** From BuhlmannEquation.Buhlmann
-    public static final double startP_he = 0;
-    public static final double startP_N2 = 0.7902; // Starting pressure of N2
-    public static final double waterVapourPressure = 0.0627;
-    public static final int surfacePressure = 1;
-    public static final double surface_Pressure = 0.09985; //Check which value should be being used
-
-    public static final double f_gas = 0.68; // EAN32
-
-    // Gradient factors
-    public static final double gfLow = 0.3;
-    public static final double gfHigh = 0.85;
-     */
-
-    /** From BuhlmannEquation.Ascent
-     * public static final int surfacePressure = Buhlmann.surfacePressure;
-     *     public static final int ascentRate = 10;
-     *     public static final int descentRate = 20;
-     *     public static final double meterToBar = 0.09985;
-     *
-     *     public static boolean lastStop6m = false;
-     */
 
     public static final double waterVapourPressure = 0.0627;
     public static final int surfacePressure = 1;
