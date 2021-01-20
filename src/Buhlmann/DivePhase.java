@@ -1,6 +1,6 @@
 package Buhlmann;
 
-public enum DiveStage {
+public enum DivePhase {
     START,
     DESCENT,
     DIVE,

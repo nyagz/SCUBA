@@ -1,10 +1,10 @@
 package Buhlmann;
 
 public class GasMix {
-    private static int depth;
-    private static int o2;
-    private static int n2;
-    private static int he;
+    private int depth;
+    private int o2;
+    private int n2;
+    private int he;
 
     public GasMix(int depth, int o2, int n2, int he){
         this.depth = depth;
@@ -13,19 +13,19 @@ public class GasMix {
         this.he = he;
     }
 
-    public static int getDepth() {
+    public int getDepth() {
         return depth;
     }
 
-    public static int getO2() {
+    public int getO2() {
         return o2;
     }
 
-    public static int getN2() {
+    public int getN2() {
         return n2;
     }
 
-    public static int getHe() {
+    public int getHe() {
         return he;
     }
 }

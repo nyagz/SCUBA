@@ -33,17 +33,10 @@ public class ZHL16 {
     public static final double startP_he = 0;
     public static final double startP_N2 = 0.7902;
 
-    public static final double f_gas = 0.68; // EAN32
-
     // Gradient factors
     public static final double gfLow = 0.3;
     public static final double gfHigh = 0.85;
 
-    public static final int ascentRate = 10;
-    public static final int descentRate = 20;
-    public static final double meterToBar = 0.09985;
-
-    public static boolean lastStop6m = false;
     public static ArrayList<DecoStop> deco_stops = new ArrayList<>();
 
     public static CompartmentData loadTissues(double absolutePressure, double time, GasMix gas, double pressureRate,
@@ -103,16 +96,26 @@ public class ZHL16 {
         return ceilings;
     }
 
-    public static void main(String args[]){
-        Tests.testingDecoStop();
+    // Initialises pressures in each compartment assuming the surface pressure is 1
+    public static CompartmentData initialisePressure(){
+        double pN2 = startP_N2 * (ZHL16.surfacePressure - ZHL16.waterVapourPressure);
+        double pHe = startP_he;
+        TissueLoader[] tissues = new TissueLoader[16];
 
-        // if(Equations.buhlmannEquation(0.74065446, 0, 1.1696, 0.5578, 0, 0, 0.3) == 0.31488600902007363){
-        //     System.out.println("It works!");
-        // } else {
-        //     System.out.println("It no works :(");
-        // }
-
+        for (int i = 0; i < tissues.length; i++){
+            tissues[i] = new TissueLoader(pN2, pHe);
+        }
+        return new CompartmentData(tissues, ZHL16.gfLow);
     }
 
-
+    // Initialises pressures in each compartment
+    public static CompartmentData initialisePressure(double sp){
+        double pN2 = startP_N2 * (sp - ZHL16.waterVapourPressure);
+        double pHe = startP_he;
+        TissueLoader[] tissues = new TissueLoader[16];
+        for (int i = 0; i < tissues.length; i++){
+            tissues[i] = new TissueLoader(pN2, pHe);
+        }
+        return new CompartmentData(tissues, gfLow);
+    }
 }
