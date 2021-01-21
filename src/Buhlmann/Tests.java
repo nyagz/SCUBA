@@ -33,7 +33,7 @@ public class Tests {
 
     public static void testingCeiling(){
         CompartmentData data = ZHL16.initialisePressure(1);
-        if(ZHL16.ascentCeiling(data) == 0.6636871173176457){
+        if(ZHL16.Ceiling(data) == 0.6636871173176457){
             System.out.println("Yay, it works!");
         } else {
             System.out.println("Oh no :(");

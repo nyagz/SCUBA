@@ -7,14 +7,6 @@ public class Step {
     private GasMix gas;
     private CompartmentData data;
 
-    // FIXME: Potentially delete as this may never be needed (I think)
-    public Step(DivePhase phase, double absolutePressure, double time, CompartmentData data){
-        this.phase = phase;
-        this.absolutePressure = absolutePressure;
-        this.time = time;
-        this.data = data;
-    }
-
     public Step(DivePhase phase, double absolutePressure, double time, GasMix gas, CompartmentData data){
         this.phase = phase;
         this.absolutePressure = absolutePressure;

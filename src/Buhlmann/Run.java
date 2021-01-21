@@ -18,7 +18,12 @@ public class Run{
     public static void plan(double maxDepth, int bottomTime){ }
 
     // TODO: Complete
-    // Checks dive steps needed to ascent from the current depth to the surface
+    /** Checks dive steps needed to ascent from the current depth to the surface
+     *
+     * @param startingStep
+     * @param gasList
+     * @return
+     */
     public static ArrayList<Step> diveAscent(DiveStep startingStep, ArrayList<GasMix> gasList){
         GasMix bottomGas = gasList.get(0);
         // FIXME: NDL ascents can be performed without bottom gas, look into these conditions
@@ -45,7 +50,7 @@ public class Run{
         double time = pressure / ascentRate / meterToBar;
         Step step = nextDiveStepAscent(startingStep, time, gas, gf);
         startingStep.getData().setGf(gf);
-        double ceilingLimit = ZHL16.ascentCeiling(startingStep.getData());
+        double ceilingLimit = ZHL16.Ceiling(startingStep.getData());
         if (step.getAbsolutePressure() < ceilingLimit){
             step = null;
         }
@@ -60,7 +65,8 @@ public class Run{
      * @return
      */
     public static Step nextDiveStepAscent(DiveStep currentStep, double time, GasMix gas){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas, currentStep.getData());
+        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
+                currentStep.getData());
         double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
         return new Step(DivePhase.ASCENT, pressure, currentStep.getTime() + time, gas, data);
     }
@@ -74,7 +80,8 @@ public class Run{
      * @return
      */
     public static Step nextDiveStepAscent(DiveStep currentStep, double time, GasMix gas, double gf){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas, currentStep.getData());
+        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
+                currentStep.getData());
         double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
         data.setGf(gf);
         return new Step(DivePhase.ASCENT, pressure, currentStep.getTime() + time, gas, data);
@@ -89,43 +96,148 @@ public class Run{
      * @return
      */
     public static Step nextDiveStepAscent(DiveStep currentStep, double time, GasMix gas, DivePhase phase){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas, currentStep.getData());
+        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
+                currentStep.getData());
         double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
         return new Step(phase, pressure, currentStep.getTime() + time, gas, data);
     }
 
-    // Calculates the next dive step while ascending
-    // If dive phase and gradient factor are specified
+    /**Calculates the next dive step while ascending (if dive phase and gradient factor are specified)
+     *
+     * @param currentStep
+     * @param time
+     * @param gas
+     * @param phase
+     * @param gf
+     * @return
+     */
     public static Step nextDiveStepAscent(DiveStep currentStep, double time, GasMix gas, DivePhase phase, double gf){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas, currentStep.getData());
+        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
+                currentStep.getData());
         double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
         data.setGf(gf);
         return new Step(phase, pressure, currentStep.getTime() + time, gas, data);
 
     }
 
-    // Calculates tissues pressure after ascent
-    public static CompartmentData tissuePressureAscent(double absolutePressure, double time, GasMix gas, CompartmentData data){
+    /**
+     * Calculates tissues pressure after ascent
+     * @param absolutePressure
+     * @param time
+     * @param gas
+     * @param data
+     * @return
+     */
+    public static CompartmentData tissuePressureAscent(double absolutePressure, double time, GasMix gas,
+                                                       CompartmentData data){
         double rate = -ascentRate * meterToBar;
         return ZHL16.loadTissues(absolutePressure, time, gas, rate, data);
     }
 
-    // Calcuate the stages for a DCS-free ascent
+    /**
+     * Calcuate the stages for a DCS-free ascent
+     * @param gasList
+     * @return
+     */
+    // TODO: Complete
     public static Stage freeAscentStages(ArrayList<GasMix> gasList){
-
         return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    public static DiveStep findFirstDecoStop(DiveStep startingStep, double absolutePressure, GasMix gas){
-        double limit = ZHL16.ascentCeiling(new CompartmentData(startingStep.getData().getTissues(),
+    /**
+     * Finds the first decompression stop using Schreiner's
+     * @param startingStep
+     * @param absolutePressure
+     * @param gas
+     * @return
+     */
+    public static Step findFirstDecoStop(DiveStep startingStep, double absolutePressure, GasMix gas){
+        Step step = null;
+        Step stop;
+        boolean entered = false;
+        double limit = ZHL16.Ceiling(new CompartmentData(startingStep.getData().getTissues(),
                 startingStep.getData().getGf()));
         limit = Math.ceil((limit - surfacePressure) / (3 * meterToBar)) * (3 * meterToBar) + surfacePressure;
         limit = Math.max(limit, absolutePressure);
+        double time = pressureToTime(absolutePressure - limit, ascentRate);
 
-        return null;
+        while(startingStep.getAbsolutePressure() > limit && startingStep.getAbsolutePressure() > absolutePressure){
+            entered = true;
+            step = nextStepAscent(startingStep, time, gas);
+            limit = ZHL16.Ceiling(step.getData());
+            limit = pressureMetersDiv3(limit);
+            limit = Math.max(absolutePressure, limit);
+            time = pressureToTime(step.getAbsolutePressure() - limit, ascentRate);
+        }
+
+        if(entered == true){
+            stop = step;
+        } else {
+            stop = new Step(DivePhase.DECO_STOP, startingStep.getAbsolutePressure(), startingStep.getTime(), gas, startingStep.getData());
+        }
+
+        return stop;
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Calculates the next dive step when ascending for a certain amount of time
+     * @param step
+     * @param time
+     * @param gas
+     * @return
+     */
+    public static Step nextStepAscent(DiveStep step, double time, GasMix gas){
+        CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
+        double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
+        return new Step(DivePhase.ASCENT, pressure, step.getTime() + time, gas, data);
+    }
+
+    /**
+     * Calculates the next dive step when ascending for a certain amount of time (with specified gradient factor)
+     * @param step
+     * @param time
+     * @param gas
+     * @param gf
+     * @return
+     */
+    public static Step nextStepAscent(Step step, double time, GasMix gas, double gf){
+        CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
+        double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
+        data.setGf(gf);
+        return new Step(DivePhase.ASCENT, pressure, step.getTime() + time, gas, data);
+    }
+
+    /**
+     * Calculates the next dive step when ascending for a certain amount of time (with specified dive phase)
+     * @param step
+     * @param time
+     * @param gas
+     * @param phase
+     * @return
+     */
+    public static Step nextStepAscent(Step step, double time, GasMix gas, DivePhase phase){
+        CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
+        double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
+        return new Step(phase, pressure, step.getTime() + time, gas, data);
+    }
+
+    /**
+     * Calculates the next dive step when ascending for a certain amount of time (with specified dive phase and
+     * gradient factor)
+     * @param step
+     * @param time
+     * @param gas
+     * @param gf
+     * @param phase
+     * @return
+     */
+    public static Step nextStepAscent(Step step, double time, GasMix gas, double gf, DivePhase phase){
+        CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
+        double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
+        data.setGf(gf);
+        return new Step(phase, pressure, step.getTime() + time, gas, data);
+    }
 
     /**
      * Converts pressure to meters that's divisible by 3

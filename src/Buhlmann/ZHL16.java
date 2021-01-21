@@ -52,7 +52,7 @@ public class ZHL16 {
     }
 
     // Calculates pressure of the ascent ceiling
-    public static double ascentCeiling(CompartmentData data){
+    public static double Ceiling(CompartmentData data){
         double[] compartments = tissueCeiling(data);
         double ceiling = compartments[0];
         for(double p: compartments){
