@@ -18,8 +18,8 @@ public class Run{
     public static void plan(double maxDepth, int bottomTime){ }
 
     // TODO: Complete
-    /** Checks dive steps needed to ascent from the current depth to the surface
-     *
+    /**
+     * Checks dive steps needed to ascent from the current depth to the surface
      * @param startingStep
      * @param gasList
      * @return
@@ -102,8 +102,8 @@ public class Run{
         return new Step(phase, pressure, currentStep.getTime() + time, gas, data);
     }
 
-    /**Calculates the next dive step while ascending (if dive phase and gradient factor are specified)
-     *
+    /**
+     * Calculates the next dive step while ascending (if dive phase and gradient factor are specified)
      * @param currentStep
      * @param time
      * @param gas
@@ -286,6 +286,68 @@ public class Run{
     public static double pressureToTime(double pressure, double rate){
         return pressure / rate / meterToBar;
     }
+
+    /**
+     *
+     * @param absolutePressure
+     * @param time
+     * @param gas
+     * @param data
+     * @return
+     */
+    public static CompartmentData tissueLoadingAfterTime(double absolutePressure, double time, GasMix gas, CompartmentData data){
+        return ZHL16.loadTissues(absolutePressure, time, gas, 0, data);
+    }
+
+    @FunctionalInterface
+    interface Function2<One, Two>{
+        public Boolean apply(One one, Two two);
+    }
+
+    public static Step decompressionStopLength(Step step, double nextTime, GasMix gas, double nextGf){
+        CompartmentData data = tissueLoadingAfterTime(step.getAbsolutePressure(), 1, gas, step.getData());
+        if(possibleAscent(step.getAbsolutePressure(), nextTime, data, nextGf)){
+            return new Step(DivePhase.DECO_STOP, step.getAbsolutePressure(), step.getTime() + 1, gas, data);
+        }
+
+        double maxTime = 8;
+        // FIXME
+        // Object next_f = (double time, CompartmentData newData) -> {
+        //     time + maxTime, tissueLoadingAfterTime(step.getAbsolutePressure(), maxTime, gas, data);
+        // }
+
+        Function2<Double, CompartmentData> inv_f = (time, tempData) -> {
+            return possibleAscent(step.getAbsolutePressure(), nextTime, data, nextGf);
+        };
+        return null;
+    }
+
+    /**
+     * Checks if it's possible to ascend without violating the ceiling limit
+     * @param absolutePressure
+     * @param time
+     * @param data
+     * @return
+     */
+    public static boolean possibleAscent(double absolutePressure, double time, CompartmentData data){
+        double pressure = absolutePressure - timeToPressure(time, ascentRate);
+        return pressure >= ZHL16.Ceiling(data);
+    }
+
+    /**
+     * Checks if it's possible to ascend without violating the ceiling limit (with specified gradient factor)
+     * @param absolutePressure
+     * @param time
+     * @param data
+     * @param gf
+     * @return
+     */
+    public static boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf){
+        double pressure = absolutePressure - timeToPressure(time, ascentRate);
+        data.setGf(gf);
+        return pressure >= ZHL16.Ceiling(data);
+    }
+
 
     public static void main(String args[]){
         Tests.testingDiveProfile();
