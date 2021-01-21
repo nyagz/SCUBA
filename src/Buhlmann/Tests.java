@@ -1,5 +1,5 @@
 package Buhlmann;
-// TODO: Delete the class
+// TODO: Delete the class when finished with testing
 public class Tests {
 
     public static void testingDecoStop(){
@@ -38,6 +38,6 @@ public class Tests {
         } else {
             System.out.println("Oh no :(");
         }
-        double[] newCeilings = ZHL16.tissueCeiling(data);
+        double[] newCeilings = ZHL16.tissueCeiling(data); //FIXME: What is this for?
     }
 }
