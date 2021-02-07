@@ -2,7 +2,7 @@ package Buhlmann;
 
 import java.util.ArrayList;
 
-public class Run{
+public class Run<T>{
     private static final int ascentRate = 10;
     private static final int descentRate = 20;
     private static final double meterToBar = 0.09985;
@@ -11,6 +11,7 @@ public class Run{
     private static boolean lastStop6m = false;
 
     private static ArrayList<GasMix> gasList = new ArrayList<>();
+    private static ArrayList<DecoStop> decompressionStops = new ArrayList<>();
     private static ArrayList<Step> steps = new ArrayList<>();
 
 
@@ -25,16 +26,23 @@ public class Run{
      * @return
      */
     public static ArrayList<Step> diveAscent(DiveStep startingStep, ArrayList<GasMix> gasList){
+        ArrayList<Step> steps = new ArrayList<>();
         GasMix bottomGas = gasList.get(0);
         // FIXME: NDL ascents can be performed without bottom gas, look into these conditions
         Step step = NDL(startingStep, bottomGas);
-        if (step == null){
-            steps.add(new Step(DivePhase.ASCENT, startingStep.getAbsolutePressure(), startingStep.getTime(),
-                    bottomGas, startingStep.getData()));
+        //FIXME: Double check if this should be (== null) or (!= null)
+        if (step != null){
+            steps.add(step);
             return steps;
         }
-        Stage stages;
-        // FIXME: Figure out what on earth is supposed to be happening here
+        step = new Step(DivePhase.ASCENT, startingStep.getAbsolutePressure(),startingStep.getTime(),bottomGas,
+                startingStep.getData());
+        ArrayList<Stage> stages = decoFreeAscentStages(gasList);
+        for(Step s: freeStagedAscent(step, stages)){
+            steps.add(s);
+        }
+
+        stages = decompressionAscentStages(step.getAbsolutePressure(), gasList);
         return steps;
     }
 
@@ -56,6 +64,24 @@ public class Run{
         }
         return step;
     }
+
+    // public static ArrayList<DecoFreeStage> decoFreeAscentStages(ArrayList<GasMix> gasList){
+    //     ArrayList<Mix> gasMixes = new ArrayList<>();
+    //     ArrayList<DecoFreeStage> decoFreeStages = new ArrayList<>();
+//
+    //     int size = gasList.size();
+    //     for (int i = 0; i < gasList.size() - 1; i++){
+    //         Mix temp = new Mix(gasList.get(i), gasList.get(size - i));
+    //         gasMixes.add(temp);
+    //     }
+//
+    //     for (Mix mix:gasMixes){
+    //         DecoFreeStage temp = new DecoFreeStage(depthToPressure(((mix.getSecondGas().getDepth() - 1) / 4) * 3),
+    //                 gasList.get(gasList.size()-1));
+    //         decoFreeStages.add(temp);
+    //     }
+    //     return decoFreeStages;
+    // }
 
     /**
      * Calculates the next dive startingStep while ascending
@@ -139,11 +165,177 @@ public class Run{
      * @param gasList
      * @return
      */
-    // TODO: Complete
-    public static Stage freeAscentStages(ArrayList<GasMix> gasList){
-        return null;
+    public static ArrayList<Stage> decoFreeAscentStages(ArrayList<GasMix> gasList){
+        ArrayList<Mix> gasMixes = new ArrayList<>();
+        ArrayList<Stage> decoFreeStages = new ArrayList<>();
+
+        int size = gasList.size();
+        for (int i = 0; i < gasList.size() - 1; i++){
+            Mix temp = new Mix(gasList.get(i), gasList.get(size - i));
+            gasMixes.add(temp);
+        }
+
+        for (Mix mix:gasMixes){
+            Stage temp = new Stage(depthToPressure(((mix.getSecondGas().getDepth() - 1) / 4) * 3),
+                    gasList.get(gasList.size()-1));
+            decoFreeStages.add(temp);
+        }
+        return decoFreeStages;
     }
 
+    public static ArrayList<Step> freeStagedAscent(Step start, ArrayList<Stage> stages){
+        Step step = start;
+        DiveStep diveStep = new DiveStep(step.getAbsolutePressure(), step.getData(), step.getTime());
+        ArrayList<Step> steps = new ArrayList<>();
+        ArrayList<Step> currentSteps;
+        for (Stage stage:stages){
+            //FIXME: Finish
+            if (step.getGas() != stage.getGas()){
+                currentSteps = ascentSwitchGas(step, stage.getGas());
+                if (ceilingLimitNotViolated(currentSteps.get(currentSteps.size() - 1).getAbsolutePressure(),
+                        currentSteps.get(currentSteps.size() - 1).getData())) {
+                    step = currentSteps.get(currentSteps.size() - 1);
+                    // Gas switch performed
+                } else {
+                    break;
+                    // Gas switch into deco zone, revert
+                }
+            }
+            Step s = findFirstDecoStop(diveStep, stage.getAbsolutePressure(), stage.getGas());
+            if (s == step){
+                break; //Already at deco zone
+            } else {
+                step = s;
+                steps.add(step);
+                if (Math.abs(step.getAbsolutePressure() - stage.getAbsolutePressure()) > Math.pow(10, 10)){
+                    // Decompression stop found
+                    break;
+                }
+            }
+        }
+        return steps;
+    }
+
+    public static ArrayList<Step> ascentSwitchGas(Step step, GasMix gas){
+        DiveStep diveStep1 = new DiveStep(step.getAbsolutePressure(), step.getData(), step.getTime());
+        ArrayList<Step> steps = new ArrayList<>();
+        double pressure;
+        double time;
+        pressure = depthToPressure(gas.getDepth());
+        if (Math.abs(step.getAbsolutePressure() - pressure) < Math.pow(10, 10)){
+            step.setPhase(DivePhase.GAS_SWITCH);
+            step.setGas(gas);
+            steps.add(step);
+        } else {
+            time = pressureToTime(step.getAbsolutePressure() - pressure, ascentRate);
+            Step step1 = nextDiveStepAscent(diveStep1, time, step.getGas());
+
+            Step step2 = step1;
+            step2.setPhase(DivePhase.GAS_SWITCH);
+            step2.setGas(gas);
+            steps.add(step2);
+
+            pressure = depthToPressure(Math.floor(gas.getDepth() /3) * 3);
+            time = pressureToTime(step2.getAbsolutePressure() - pressure, ascentRate);
+            DiveStep diveStep2 = new DiveStep(step.getAbsolutePressure(), step.getData(), step.getTime());
+            Step step3 = nextDiveStepAscent(diveStep2, time, gas);
+            steps.add(step3);
+        }
+        return steps;
+    }
+
+    //FIXME: Is this ever gonna be used?
+    public static Step gasSwitch(Step step, GasMix gas){
+        Step newStep = new Step(DivePhase.GAS_SWITCH, step.getAbsolutePressure(), step.getTime(), gas, step.getData());
+        return newStep;
+    }
+
+    /**
+     * Returns true iff the ceiling limit for the decompression limit hasn't been violated
+     * @param absolutePressure
+     * @param compartmentData
+     * @return true/false
+     */
+    public static boolean ceilingLimitNotViolated(double absolutePressure, CompartmentData compartmentData){
+        return absolutePressure >= ZHL16.Ceiling(compartmentData);
+    }
+
+    public static ArrayList<Stage> decompressionAscentStages(double absolutePressure, ArrayList<GasMix> gasList){
+        ArrayList<Mix> gasMixes = new ArrayList<>();
+        ArrayList<Stage> stages = new ArrayList<>();
+
+        int end = gasList.size();
+        for (int i = 0; i < gasList.size() - 1; i++){
+            Mix temp = new Mix(gasList.get(i), gasList.get(end - i));
+            gasMixes.add(temp);
+        }
+
+        for (Mix mix:gasMixes){
+            Stage temp = new Stage(depthToPressure(Math.floor(mix.getSecondGas().getDepth() / 3) * 3),
+                    gasList.get(gasList.size() - 1));
+            stages.add(temp);
+        }
+        return stages;
+    }
+
+    // FIXME: Finish
+    public static void decompressionStagedAscent(Step start, ArrayList<Stage> stages){
+        GasMix bottomGas = gasList.get(0);
+        ArrayList<DecoStops> decoStops = decompressionStops(start, stages);
+        Step step = start;
+        for (DecoStops decoStop: decoStops){
+            if (step.getAbsolutePressure() >= depthToPressure(decoStop.getGas().getDepth()) && decoStop.getGas() != bottomGas){
+                // Switch the gas
+                ArrayList<Step> steps = ascentSwitchGas(step, decoStop.getGas());
+                // FIXME yield step
+            }
+            Step end = decompressionStopLength(step, decoStop.getAscentTime(), decoStop.getGas(),decoStop.getNextGf());
+            decompressionStops.add(new DecoStop(pressureToDepth(step.getAbsolutePressure()), end.getTime() - step.getTime()));
+            step = end;
+            DiveStep temp = new DiveStep(step.getAbsolutePressure(), step.getData(), step.getTime());
+            // FIXME yield step
+            // Ascend to next decompression stop
+            step = nextDiveStepAscent(temp, decoStop.getAscentTime(), decoStop.getGas(), decoStop.getNextGf());
+            // FIXME yield step
+        }
+    }
+
+    public static ArrayList<DecoStops> decompressionStops(Step step, ArrayList<Stage> stages){
+        ArrayList<DecoStops> decoStops = new ArrayList<>();
+        int stopsNumber = stops(step.getAbsolutePressure());
+        double gfStep = (double) (ZHL16.gfHigh - ZHL16.gfLow) / stopsNumber;
+        double p2t = pressureToTime(meterToBar * 3, ascentRate);
+        double gf = step.getData().getGf();
+
+        double absolutePressure = step.getAbsolutePressure();
+        double sixMeterStop = surfacePressure + 2 * (meterToBar * 3);
+        boolean last6m = lastStop6m;
+        for (Stage stage : stages){
+            int n = stops(absolutePressure, stage.getAbsolutePressure());
+            for (int i = 0; i < n; i++){
+                gf += gfStep;
+                if (last6m && Math.abs(absolutePressure - stopsNumber * (meterToBar * 3) - sixMeterStop) < Math.pow(10, 10)){
+                    DecoStops result = new DecoStops(stage.getAbsolutePressure(), stage.getGas(), 2 * p2t,
+                            gf + gfStep);
+                    decoStops.add(result);
+                } else {
+                    DecoStops result = new DecoStops(stage.getAbsolutePressure(), stage.getGas(), p2t, gf);
+                    decoStops.add(result);
+                }
+            }
+        }
+        return decoStops;
+    }
+
+    public static int stops(double startPressure){
+        double k = (startPressure - surfacePressure) / (3 * meterToBar);
+        return (int) k;
+    }
+
+    public static int stops(double startPressure, double endPressure){
+        double k = (startPressure - endPressure) / (3 * meterToBar);
+        return (int) k;
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Finds the first decompression stop using Schreiner's
@@ -300,10 +492,16 @@ public class Run{
     }
 
     @FunctionalInterface
-    interface Function2<One, Two>{
+    interface FunctionInvF<One, Two>{
         public Boolean apply(One one, Two two);
     }
 
+    @FunctionalInterface
+    interface FunctionNextF<One, Two>{
+        public nextF apply(One one, Two two);
+    }
+
+    // FIXME _deco_stop
     public static Step decompressionStopLength(Step step, double nextTime, GasMix gas, double nextGf){
         CompartmentData data = tissueLoadingAfterTime(step.getAbsolutePressure(), 1, gas, step.getData());
         if(possibleAscent(step.getAbsolutePressure(), nextTime, data, nextGf)){
@@ -311,14 +509,14 @@ public class Run{
         }
 
         double maxTime = 8;
-        // FIXME
-        // Object next_f = (double time, CompartmentData newData) -> {
-        //     time + maxTime, tissueLoadingAfterTime(step.getAbsolutePressure(), maxTime, gas, data);
-        // }
-
-        Function2<Double, CompartmentData> inv_f = (time, tempData) -> {
-            return possibleAscent(step.getAbsolutePressure(), nextTime, data, nextGf);
+        FunctionNextF<Double, CompartmentData> next_f = (time, newData) -> {
+            return new nextF(time + maxTime, tissueLoadingAfterTime(step.getAbsolutePressure(), maxTime, gas,
+                    data));
         };
+        FunctionInvF<Double, CompartmentData> inv_f = (time, tempData) ->
+            possibleAscent(step.getAbsolutePressure(), nextTime, data, nextGf);
+
+
         return null;
     }
 
@@ -346,6 +544,18 @@ public class Run{
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
         data.setGf(gf);
         return pressure >= ZHL16.Ceiling(data);
+    }
+
+    // FIXME
+    @SafeVarargs
+    public void recursiveFunction(boolean predicate, nextF f, double time, CompartmentData data){
+        for(T arg: args){
+            f(arg);
+        }
+        nextF result = f(time, data);
+    }
+
+    private nextF f(double time, CompartmentData data) {
     }
 
 

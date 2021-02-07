@@ -38,6 +38,6 @@ public class Tests {
         } else {
             System.out.println("Oh no :(");
         }
-        double[] newCeilings = ZHL16.tissueCeiling(data); //FIXME: What is this for?
+        double[] newCeilings = ZHL16.tissueCeiling(data); //FIXME: What is this for? Lord knows
     }
 }
