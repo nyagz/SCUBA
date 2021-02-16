@@ -3,10 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/DecoStop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/DecoStop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/DecoStop.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/DecoStop.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/DiveStage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Gases.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Gases.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Run.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tissues.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16BGF.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/ZHL16CGF.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/BuhlmannEquation/Ascent.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Run.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Step.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Step.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Tests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/ZHL16.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/ZHL16.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +57,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Application.Run">
+  <component name="RunManager" selected="Application.VPM">
     <configuration name="Ascent" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="BuhlmannEquation.Ascent" />
       <module name="SCUBA" />
@@ -110,11 +119,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.VPM" />
         <item itemvalue="Application.Run" />
         <item itemvalue="Application.ZHL16" />
         <item itemvalue="Application.Ascent" />
         <item itemvalue="Application.Buhlmann" />
-        <item itemvalue="Application.VPM" />
       </list>
     </recent_temporary>
   </component>
@@ -215,10 +224,10 @@
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="165" y="10" key="SettingsEditor/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1612587049489" />
-    <state x="722" y="260" key="com.intellij.ide.util.TipDialog" timestamp="1612524496263">
+    <state x="722" y="260" key="com.intellij.ide.util.TipDialog" timestamp="1613415311594">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1612524496263" />
+    <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1613415311594" />
     <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872@0.0.1368.872" timestamp="1611666340199" />
     <state x="109" y="56" key="new project wizard" timestamp="1612586537184">
       <screen x="0" y="0" width="1368" height="872" />

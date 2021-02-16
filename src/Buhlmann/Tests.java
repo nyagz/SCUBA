@@ -1,4 +1,7 @@
 package Buhlmann;
+
+import java.util.ArrayList;
+
 // TODO: Delete the class when finished with testing
 public class Tests {
 
@@ -39,5 +42,14 @@ public class Tests {
             System.out.println("Oh no :(");
         }
         double[] newCeilings = ZHL16.tissueCeiling(data); //FIXME: What is this for? Lord knows
+    }
+
+    public static void testingPlanning(){
+        Run engine = ZHL16.create();
+        engine.addGas(0, 21);
+        ArrayList<Step> profile = engine.plan(35, 40);
+        for (Step p: profile){
+            System.out.println(p);
+        }
     }
 }

@@ -94,4 +94,8 @@ public class ZHL16 {
         }
         return new CompartmentData(tissues, gfLow);
     }
+
+    public static Run create(){
+        return new Run();
+    }
 }
