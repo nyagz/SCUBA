@@ -1,32 +1,8 @@
 package Buhlmann;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 
 public class ZHL16 {
-    /** From BuhlmannEquation.Buhlmann
-    public static final double startP_he = 0;
-    public static final double startP_N2 = 0.7902; // Starting pressure of N2
-    public static final double waterVapourPressure = 0.0627;
-    public static final int surfacePressure = 1;
-    public static final double surface_Pressure = 0.09985; //Check which value should be being used
-
-    public static final double f_gas = 0.68; // EAN32
-
-    // Gradient factors
-    public static final double gfLow = 0.3;
-    public static final double gfHigh = 0.85;
-     */
-
-    /** From BuhlmannEquation.Ascent
-     * public static final int surfacePressure = Buhlmann.surfacePressure;
-     *     public static final int ascentRate = 10;
-     *     public static final int descentRate = 20;
-     *     public static final double meterToBar = 0.09985;
-     *
-     *     public static boolean lastStop6m = false;
-     */
 
     public static final double waterVapourPressure = 0.0627;
     public static final int surfacePressure = 1;
@@ -76,8 +52,17 @@ public class ZHL16 {
     }
 
     // Calculates pressure of the ascent ceiling
-    public static double ascentCeiling(CompartmentData data){
+    public static double ceiling(CompartmentData data){
         double[] compartments = tissueCeiling(data);
+        double ceiling = compartments[0];
+        for(double p: compartments){
+            ceiling = Math.max(ceiling, p);
+        }
+        return ceiling;
+    }
+
+    public static double ceiling(CompartmentData data, double gf){
+        double[] compartments = tissueCeiling(data, gf);
         double ceiling = compartments[0];
         for(double p: compartments){
             ceiling = Math.max(ceiling, p);
@@ -92,6 +77,19 @@ public class ZHL16 {
         for (int i = 0; i < tissues.length; i++){
             ceilings[i] = Equations.buhlmannEquation(tissues[i].getN2Loader(), tissues[i].getHeLoader(),
                     ZHL16BGF.N2_A[i], ZHL16BGF.N2_B[i], ZHL16BGF.He_A[i], ZHL16BGF.He_B[i], data.getGf());
+        }
+        return ceilings;
+    }
+
+    public static double[] tissueCeiling(CompartmentData data, Double gf){
+        if (gf == null){
+            gf = gfLow;
+        }
+        TissueLoader[] tissues = data.getTissues();
+        double[] ceilings = new double[16];
+        for (int i = 0; i < tissues.length; i++){
+            ceilings[i] = Equations.buhlmannEquation(tissues[i].getN2Loader(), tissues[i].getHeLoader(),
+                    ZHL16BGF.N2_A[i], ZHL16BGF.N2_B[i], ZHL16BGF.He_A[i], ZHL16BGF.He_B[i], gf);
         }
         return ceilings;
     }
@@ -117,5 +115,9 @@ public class ZHL16 {
             tissues[i] = new TissueLoader(pN2, pHe);
         }
         return new CompartmentData(tissues, gfLow);
+    }
+
+    public static Run create(){
+        return new Run();
     }
 }

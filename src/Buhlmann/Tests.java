@@ -1,5 +1,10 @@
 package Buhlmann;
-// TODO: Delete the class
+
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+
+// TODO: Delete the class when finished with testing
 public class Tests {
 
     public static void testingDecoStop(){
@@ -33,11 +38,24 @@ public class Tests {
 
     public static void testingCeiling(){
         CompartmentData data = ZHL16.initialisePressure(1);
-        if(ZHL16.ascentCeiling(data) == 0.6636871173176457){
+        if(ZHL16.ceiling(data) == 0.6636871173176457){
             System.out.println("Yay, it works!");
         } else {
             System.out.println("Oh no :(");
         }
-        double[] newCeilings = ZHL16.tissueCeiling(data);
+        double[] newCeilings = ZHL16.tissueCeiling(data); //TODO: Figre out what this is for? Lord knows
+    }
+
+    public static void testingPlanning(){
+       Run engine = ZHL16.create();
+       engine.addGas(0, 21);
+       ArrayList<Step> profile = engine.plan(35, 40);
+       // for (Step p: profile){
+       //     System.out.println(p);
+       // }
+    }
+
+    public static void main(String args[]){
+        testingPlanning();
     }
 }

@@ -9,4 +9,16 @@ public class Gases {
     public static GasMix getEan32(){
         return EAN32;
     }
+
+    public static GasMix getAir(){
+        return Air;
+    }
+
+    public static GasMix getEan50(){
+        return EAN50;
+    }
+
+    public static GasMix getO2(){
+        return O2;
+    }
 }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class DecoStop {
     private double depth;
-    private int min;
+    private double min;
 
-    public DecoStop(double depth, int min){
+    public DecoStop(double depth, double min){
         this.depth = depth;
         this.min = min;
     }
@@ -15,12 +15,12 @@ public class DecoStop {
         return depth;
     }
 
-    public int getMin() {
+    public double getMin() {
         return min;
     }
 
-    public static int totalDecoStops(ArrayList<DecoStop> deco_stops){
-        int total = 0;
+    public static double totalDecoStops(ArrayList<DecoStop> deco_stops){
+        double total = 0;
         for (DecoStop p: deco_stops){
             total += p.getMin();
         }
