@@ -45,6 +45,35 @@ public class Run{
     }
 
     /**
+     * Converts pressure (in bars) to depth (in meters)
+     * @param absolutePressure
+     * @return
+     */
+    public static double pressureToDepth(double absolutePressure){
+        return Math.round((absolutePressure - surfacePressure) / meterToBar);
+    }
+
+    /**
+     * Convert time into pressure change using the depth change rate
+     * @param time
+     * @param rate
+     * @return
+     */
+    public static double timeToPressure(double time, double rate){
+        return time * rate * meterToBar;
+    }
+
+    /**
+     * Convert pressure change to time using the depth change rate
+     * @param pressure
+     * @param rate
+     * @return
+     */
+    public static double pressureToTime(double pressure, double rate){
+        return pressure / rate / meterToBar;
+    }
+    /**
+     * TODO: Add from above here
      * Everything above here has been checked and reformatted :)
      */
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -783,37 +812,6 @@ public class Run{
     public static double pressureMetersDiv3(double absolutePressure){
         double result = Math.ceil((absolutePressure - surfacePressure) / (3 * meterToBar));
         return result * (meterToBar * 3) + surfacePressure;
-    }
-
-    // TODO: CHECKED
-    /**
-     * Converts pressure (in bars) to depth (in meters)
-     * @param absolutePressure
-     * @return
-     */
-    public static double pressureToDepth(double absolutePressure){
-        return Math.round((absolutePressure - surfacePressure) / meterToBar);
-    }
-
-    // TODO: CHECKED
-    /**
-     * Convert time into pressure change using the depth change rate
-     * @param time
-     * @param rate
-     * @return
-     */
-    public static double timeToPressure(double time, double rate){
-        return time * rate * meterToBar;
-    }
-
-    /**
-     * Convert pressure change to time using the depth change rate
-     * @param pressure
-     * @param rate
-     * @return
-     */
-    public static double pressureToTime(double pressure, double rate){
-        return pressure / rate / meterToBar;
     }
 
     /**
