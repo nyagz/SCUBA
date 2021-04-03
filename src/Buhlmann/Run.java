@@ -6,26 +6,48 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Run{
+    public static ZHL16BGF model;
     public static int ascentRate;
     public static int descentRate;
     public static double meterToBar;
     public static double surfacePressure;
     public static boolean lastStop6m;
+    public static int decoStopSearchTime;
+    public static double p3m;
 
-    public static ArrayList<GasMix> gasList = new ArrayList<>();
+    public static ArrayList<GasMix> gasList;
     public static ArrayList<GasMix> travelGasList = new ArrayList<>();
     public static ArrayList<DecoStop> decompressionStopTable = new ArrayList<>();
     public static ArrayList<Step> steps = new ArrayList<>();
 
     public Run(){
+        model = new ZHL16BGF();
         ascentRate = 10;
         descentRate = 20;
         meterToBar = 0.09985;
         surfacePressure = 1.01325;
+        decoStopSearchTime = 8;
+        p3m = 3 * meterToBar;
         lastStop6m = false;
+
+        gasList = new ArrayList<>();
+        travelGasList = new ArrayList<>();
     }
 
-    /** Neutral **/
+    // Helper functions
+    /**
+     * Convert depth (in meters) to pressure (in bars)
+     * @param depth
+     * @return
+     */
+    public static double depthToPressure(double depth){
+        return depth * meterToBar + surfacePressure;
+    }
+
+    /**
+     * Everything above here has been checked and reformatted :)
+     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static void addGas(int depth, int o2){
         int he = 0;
         gasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
@@ -50,6 +72,31 @@ public class Run{
         } else{
             gasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
         }
+    }
+
+    /**
+     * Used to sort the GasMix arrays based on depth
+     * @param list
+     * @return sorted arrayList
+     */
+    public static ArrayList<GasMix> sortList(ArrayList<GasMix> list){
+        int size = list.size();
+        int[] listArray = new int[size];
+        ArrayList<GasMix> sortedList = new ArrayList<>();
+
+        for (int i = 0; i < size; i++){
+            listArray[i] = list.get(i).getDepth();
+        }
+        Arrays.sort(listArray);
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < list.size(); j++){
+                if (list.get(j).getDepth() == listArray[i]){
+                    sortedList.add(list.get(j));
+                    list.remove(j);
+                }
+            }
+        }
+        return sortedList;
     }
 
     /**
@@ -89,7 +136,7 @@ public class Run{
         return steps;
     }
 
-    // TODO
+    // FIXME
     public static ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent){
         Step step = null;
         decompressionStopTable.clear();
@@ -119,31 +166,6 @@ public class Run{
         }
 
         return steps;
-    }
-
-    /**
-     * Used to sort the GasMix arrays based on depth
-     * @param list
-     * @return sorted arrayList
-     */
-    public static ArrayList<GasMix> sortList(ArrayList<GasMix> list){
-        int size = list.size();
-        int[] listArray = new int[size];
-        ArrayList<GasMix> sortedList = new ArrayList<>();
-
-        for (int i = 0; i < size; i++){
-            listArray[i] = list.get(i).getDepth();
-        }
-        Arrays.sort(listArray);
-        for (int i = 0; i < size; i++){
-            for (int j = 0; j < list.size(); j++){
-                if (list.get(j).getDepth() == listArray[i]){
-                    sortedList.add(list.get(j));
-                    list.remove(j);
-                }
-            }
-        }
-        return sortedList;
     }
 
     /**
@@ -763,24 +785,17 @@ public class Run{
         return result * (meterToBar * 3) + surfacePressure;
     }
 
-    /**
-     * Convert depth (in meters) to pressure (in bars)
-     * @param depth
-     * @return
-     */
-    public static double depthToPressure(double depth){
-        return depth * meterToBar + surfacePressure;
-    }
-
+    // TODO: CHECKED
     /**
      * Converts pressure (in bars) to depth (in meters)
      * @param absolutePressure
      * @return
      */
     public static double pressureToDepth(double absolutePressure){
-        return (absolutePressure - surfacePressure) / meterToBar;
+        return Math.round((absolutePressure - surfacePressure) / meterToBar);
     }
 
+    // TODO: CHECKED
     /**
      * Convert time into pressure change using the depth change rate
      * @param time

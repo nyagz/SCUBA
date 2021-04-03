@@ -3,7 +3,6 @@ package Buhlmann;
 import java.util.ArrayList;
 
 public class ZHL16 {
-
     public static final double waterVapourPressure = 0.0627;
     public static final int surfacePressure = 1;
     public static final double startP_he = 0;

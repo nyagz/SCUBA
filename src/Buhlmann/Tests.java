@@ -56,6 +56,7 @@ public class Tests {
     }
 
     public static void main(String args[]){
-        testingPlanning();
+        // testingPlanning();
+        ZHL16BGF model = new ZHL16BGF();
     }
 }
