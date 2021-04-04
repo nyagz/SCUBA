@@ -72,6 +72,32 @@ public class Run{
     public static double pressureToTime(double pressure, double rate){
         return pressure / rate / meterToBar;
     }
+
+    /**
+     * Converts pressure to meters that's divisible by 3
+     * @param absolutePressure
+     * @return
+     */
+    public static double pressureMetersDiv3(double absolutePressure){
+        double result = Math.ceil((absolutePressure - surfacePressure) / (3 * meterToBar));
+        return result * (meterToBar * 3) + surfacePressure;
+    }
+
+    public static int stops(double startPressure){
+        double k = (startPressure - surfacePressure) / (3 * meterToBar);
+        return (int) k;
+    }
+
+    public static int stops(double startPressure, Double endPressure){
+        if (endPressure == null){
+            endPressure = surfacePressure;
+        }
+        double k = (startPressure - endPressure) / (3 * meterToBar);
+        return (int) k;
+    }
+
+
+
     /**
      * TODO: Add from above here
      * Everything above here has been checked and reformatted :)
@@ -615,19 +641,6 @@ public class Run{
         return decoStops;
     }
 
-    public static int stops(double startPressure){
-        double k = (startPressure - surfacePressure) / (3 * meterToBar);
-        return (int) k;
-    }
-
-    public static int stops(double startPressure, Double endPressure){
-        if (endPressure == null){
-            endPressure = surfacePressure;
-        }
-        double k = (startPressure - endPressure) / (3 * meterToBar);
-        return (int) k;
-    }
-
     /**
      * Calculates a decompression stop
      * @param step
@@ -802,16 +815,6 @@ public class Run{
         double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
         data.setGf(gf);
         return new Step(phase, pressure, step.getTime() + time, gas, data);
-    }
-
-    /**
-     * Converts pressure to meters that's divisible by 3
-     * @param absolutePressure
-     * @return
-     */
-    public static double pressureMetersDiv3(double absolutePressure){
-        double result = Math.ceil((absolutePressure - surfacePressure) / (3 * meterToBar));
-        return result * (meterToBar * 3) + surfacePressure;
     }
 
     /**

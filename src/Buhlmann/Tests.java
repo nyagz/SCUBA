@@ -7,6 +7,14 @@ import java.util.ArrayList;
 // TODO: Delete the class when finished with testing
 public class Tests {
 
+    public Tests(Object obj){
+        if(obj instanceof ZHL16BGF){
+            System.out.println("B");
+        } else{
+            System.out.println("C");
+        }
+    }
+
     public static void testingDecoStop(){
         DecoStop test = new DecoStop(3,2);
         System.out.println("Checking it's empty");
@@ -55,8 +63,22 @@ public class Tests {
        // }
     }
 
+    public static void testingInstanceObj(ZHL16BGF obj){
+        if(obj instanceof ZHL16BGF){
+            System.out.println("B");
+        } else{
+            System.out.println("C");
+        }
+    }
+
+
     public static void main(String args[]){
         // testingPlanning();
+        // ZHL16BGF model = new ZHL16BGF();
         ZHL16BGF model = new ZHL16BGF();
+        ZHL16CGF model2 = new ZHL16CGF();
+        testingInstanceObj(model);
+        Tests a = new Tests(model);
+        Tests b = new Tests(model2);
     }
 }
