@@ -519,28 +519,72 @@ public class Run{
     }
 
     /**
-     *
-     * @param step
-     * @param gas
-     * @return 
+     * @param step - current dive step
+     * @param gas - gas to switch to
+     * @return dive step once gas has been switched
      */
-    public static ArrayList<Step> ascentSwitchGas(Step step, GasMix gas){
+    public static ArrayList<Step> ascentSwitchGas(Step step, GasMix gas) throws PressureException {
         ArrayList<Step> steps = new ArrayList<>();
         double gasPressure = depthToPressure(gas.getDepth());
+        if(step.getAbsolutePressure() - gasPressure > p3m){
+            throw new PressureException("Pressure is too high");
+        }
         if (Math.abs(step.getAbsolutePressure() - gasPressure) < Math.pow(10, 10)){
             steps.add(gasSwitch(step, gas));
         } else{
+            if(step.getAbsolutePressure() < gasPressure){
+                throw new PressureException("Pressure is high");
+            }
+
             double time = pressureToTime(step.getAbsolutePressure() - gasPressure, ascentRate);
             Step s1 = nextStepAscent(step, time, step.getGas());
-            steps.add(s1);
 
             Step s2 = gasSwitch(s1, gas);
-            steps.add(s2);
 
-            double pressure = depthToPressure(gas.getDepth() / 9);
+            double pressure = depthToPressure(Math.floor(gas.getDepth() / 3.0) * 3);
             time = pressureToTime(s2.getAbsolutePressure() - pressure, ascentRate);
             Step s3 = nextStepAscent(s2, time, gas);
+
+            steps.add(s1);
+            steps.add(s2);
             steps.add(s3);
+        }
+        return steps;
+    }
+
+    /**
+     * TODO: Up to here
+     * TODO: Fix yields
+     * @param start - starting dive step
+     * @param stages - dive stages
+     * @return ascent until first decompression stop
+     */
+    public static ArrayList<Step> freeStagedAscent(Step start, ArrayList<Stage> stages) throws GradientFactorException, PressureException {
+        ArrayList<Step> steps = new ArrayList<>();
+        ArrayList<Step> tempSteps;
+
+        Step step = start;
+        for (Stage stage:stages){
+            if (step.getGas() != stage.getGas()){
+                tempSteps = ascentSwitchGas(step, stage.getGas());
+                if (ceilingLimitNotViolated(tempSteps.get(tempSteps.size() - 1).getAbsolutePressure(),
+                        tempSteps.get(tempSteps.size() - 1).getData())) {
+                    step = tempSteps.get(tempSteps.size() - 1);
+                    steps.add(step);
+                } else{
+                    break;
+                }
+            }
+            Step s = findFirstDecoStop(step, stage.getAbsolutePressure(), stage.getGas());
+            if (s == step){
+                break; // already at the deco zone
+            } else{
+                step = s;
+                steps.add(step);
+                if (Math.abs(step.getAbsolutePressure() - stage.getGas().getDepth()) > Math.pow(10, 10)){
+                    break;
+                }
+            }
         }
 
         return steps;
@@ -677,42 +721,6 @@ public class Run{
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /** Ascent **/
-
-    /**
-     *
-     * @param start
-     * @param stages
-     * @return
-     */
-    public static ArrayList<Step> freeStagedAscent(Step start, ArrayList<Stage> stages) throws GradientFactorException, PressureException {
-        ArrayList<Step> steps = new ArrayList<>();
-        ArrayList<Step> tempSteps;
-        Step step = start;
-        for (Stage stage:stages){
-            if (step.getGas() != stage.getGas()){
-                tempSteps = ascentSwitchGas(step, stage.getGas());
-                if (ceilingLimitNotViolated(tempSteps.get(tempSteps.size() - 1).getAbsolutePressure(),
-                        tempSteps.get(tempSteps.size() - 1).getData())) {
-                    step = tempSteps.get(tempSteps.size() - 1);
-                    steps.add(step);
-                } else{
-                    break;
-                }
-            }
-            Step s = findFirstDecoStop(step, stage.getAbsolutePressure(), stage.getGas());
-            if (s == step){
-                break; // already at the deco zone
-            } else{
-                step = s;
-                steps.add(step);
-                if (Math.abs(step.getAbsolutePressure() - stage.getGas().getDepth()) > Math.pow(10, 10)){
-                    break;
-                }
-            }
-        }
-
-        return steps;
-    }
 
     /**
      * Staged ascent within the decompression zone
