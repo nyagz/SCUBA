@@ -70,7 +70,7 @@ public class ZHL16 {
     }
 
     // Calculates ascent ceiling for each tissue
-    public static double[] tissueCeiling(CompartmentData data){
+    public static double[] tissueCeiling(CompartmentData data) throws GradientFactorException {
         TissueLoader[] tissues = data.getTissues();
         double[] ceilings = new double[16];
         for (int i = 0; i < tissues.length; i++){
@@ -80,7 +80,7 @@ public class ZHL16 {
         return ceilings;
     }
 
-    public static double[] tissueCeiling(CompartmentData data, Double gf){
+    public static double[] tissueCeiling(CompartmentData data, Double gf) throws GradientFactorException {
         if (gf == null){
             gf = gfLow;
         }
