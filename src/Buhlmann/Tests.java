@@ -53,7 +53,8 @@ public class Tests {
         double[] newCeilings = ZHL16.tissueCeiling(data); //TODO: Figre out what this is for? Lord knows
     }
 
-    public static void testingPlanning() throws GradientFactorException, GasConfigException, PressureException {
+    public static void testingPlanning() throws GradientFactorException, GasConfigException, PressureException,
+            EngineError {
        Run engine = ZHL16.create();
        engine.addGas(0, 21);
        ArrayList<Step> profile = engine.plan(35, 40);
@@ -86,11 +87,25 @@ public class Tests {
         }
     }
 
-    public static void main(String args[]){
+    public static void test() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+        Run engine = new Run();
+        engine.addGas(0, 21);
+        ArrayList<Step> profile = engine.plan(35, 40);
+        for (Step p: profile){
+            System.out.println("Step(phase = " + p.getPhase() + ", abs_p = " + p.getAbsolutePressure() + ", time = " +
+                    p.getTime() + ", gf = " + p.getData().getGf() + ")");
+        }
+
+        // GasMix a = new GasMix(1, 2, 3, 4);
+        // System.out.println(a.getN2());
+    }
+
+    public static void main(String args[]) throws PressureException, GasConfigException, EngineError, GradientFactorException {
         // testingPlanning();
         // ZHL16BGF model = new ZHL16BGF();
         // testingInstanceObj();
         // testingEmptyArrayList();
-        testingSort();
+        // testingSort();
+        test();
     }
 }

@@ -1,6 +1,6 @@
 package Buhlmann;
 
-public class ZHL16GF {
+public class ZHL16GF extends ZHL16BGF{
     public static int compartments = 16;
     public static double[] N2_A;
     public static double[] N2_B;
@@ -18,6 +18,7 @@ public class ZHL16GF {
     public static double waterVapourPressure = 0.0627;
 
     public ZHL16GF(Object gf) {
+        super();
         N2_A = null;
         N2_B = null;
         He_A = null;
@@ -26,15 +27,6 @@ public class ZHL16GF {
         He_HalfLife = null;
         startP_He = 0;
         startP_N2 = 0.7902;
-
-        if (gf instanceof ZHL16BGF){
-            n2_k = kConst(ZHL16BGF.N2_halfLife);
-            he_k = kConst(ZHL16BGF.He_halfLife);
-        } else{
-            n2_k = kConst(ZHL16CGF.N2_halfLife);
-            he_k = kConst(ZHL16CGF.He_HalfLife);
-        }
-
     }
 
     /**
