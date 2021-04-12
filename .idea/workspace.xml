@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Buhlmann/EngineError.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/GasMix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/GasMix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/GradientFactorException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/GradientFactorException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Buhlmann/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Run.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -254,12 +257,12 @@
     </state>
     <state width="489" height="528" key="XDebugger.FullValuePopup/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1614022462639" />
     <state width="348" height="442" key="XDebugger.FullValuePopup/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1613497450790" />
-    <state x="11" y="-770" key="com.intellij.ide.util.TipDialog" timestamp="1617720687485">
-      <screen x="-1002" y="-1080" width="1920" height="1040" />
+    <state x="722" y="260" key="com.intellij.ide.util.TipDialog" timestamp="1618184224560">
+      <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="11" y="-770" key="com.intellij.ide.util.TipDialog/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1617720687485" />
-    <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1615209657722" />
-    <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872@0.0.1368.872" timestamp="1615568738467" />
+    <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618184224560" />
+    <state x="722" y="260" key="com.intellij.ide.util.TipDialog/0.0.1368.872@0.0.1368.872" timestamp="1618110322527" />
     <state x="109" y="56" key="new project wizard" timestamp="1612586537184">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
