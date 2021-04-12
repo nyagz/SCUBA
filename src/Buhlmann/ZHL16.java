@@ -51,7 +51,7 @@ public class ZHL16 {
     }
 
     // Calculates pressure of the ascent ceiling
-    public static double ceiling(CompartmentData data){
+    public static double ceiling(CompartmentData data) throws GradientFactorException {
         double[] compartments = tissueCeiling(data);
         double ceiling = compartments[0];
         for(double p: compartments){
@@ -60,7 +60,7 @@ public class ZHL16 {
         return ceiling;
     }
 
-    public static double ceiling(CompartmentData data, double gf){
+    public static double ceiling(CompartmentData data, double gf) throws GradientFactorException {
         double[] compartments = tissueCeiling(data, gf);
         double ceiling = compartments[0];
         for(double p: compartments){
@@ -70,7 +70,7 @@ public class ZHL16 {
     }
 
     // Calculates ascent ceiling for each tissue
-    public static double[] tissueCeiling(CompartmentData data){
+    public static double[] tissueCeiling(CompartmentData data) throws GradientFactorException {
         TissueLoader[] tissues = data.getTissues();
         double[] ceilings = new double[16];
         for (int i = 0; i < tissues.length; i++){
@@ -80,7 +80,7 @@ public class ZHL16 {
         return ceilings;
     }
 
-    public static double[] tissueCeiling(CompartmentData data, Double gf){
+    public static double[] tissueCeiling(CompartmentData data, Double gf) throws GradientFactorException {
         if (gf == null){
             gf = gfLow;
         }

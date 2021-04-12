@@ -1,11 +1,18 @@
 package Buhlmann;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // TODO: Delete the class when finished with testing
 public class Tests {
+
+    public Tests(Object obj){
+        if(obj instanceof ZHL16BGF){
+            System.out.println("B");
+        } else{
+            System.out.println("C");
+        }
+    }
 
     public static void testingDecoStop(){
         DecoStop test = new DecoStop(3,2);
@@ -36,7 +43,7 @@ public class Tests {
         System.out.println(tissues[0].getN2Loader());
     }
 
-    public static void testingCeiling(){
+    public static void testingCeiling() throws GradientFactorException {
         CompartmentData data = ZHL16.initialisePressure(1);
         if(ZHL16.ceiling(data) == 0.6636871173176457){
             System.out.println("Yay, it works!");
@@ -46,7 +53,7 @@ public class Tests {
         double[] newCeilings = ZHL16.tissueCeiling(data); //TODO: Figre out what this is for? Lord knows
     }
 
-    public static void testingPlanning(){
+    public static void testingPlanning() throws GradientFactorException, GasConfigException, PressureException {
        Run engine = ZHL16.create();
        engine.addGas(0, 21);
        ArrayList<Step> profile = engine.plan(35, 40);
@@ -55,8 +62,35 @@ public class Tests {
        // }
     }
 
+    public static void testingInstanceObj(){
+        ZHL16BGF model = new ZHL16BGF();
+        ZHL16CGF model2 = new ZHL16CGF();
+        Tests a = new Tests(model);
+        Tests b = new Tests(model2);
+    }
+
+    public static void testingEmptyArrayList(){
+        ArrayList<GasMix> gasList = new ArrayList<>();
+        if(gasList.isEmpty()){
+            System.out.println("Empty");
+        } else{
+            System.out.println("Not empty");
+        }
+    }
+
+    public static void testingSort(){
+        int[] a = new int[]{1,4,2,5,3};
+        Arrays.sort(a);
+        for(int i: a){
+            System.out.println(i);
+        }
+    }
+
     public static void main(String args[]){
         // testingPlanning();
-        ZHL16BGF model = new ZHL16BGF();
+        // ZHL16BGF model = new ZHL16BGF();
+        // testingInstanceObj();
+        // testingEmptyArrayList();
+        testingSort();
     }
 }

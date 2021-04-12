@@ -10,17 +10,15 @@ public class Equations {
     }
 
     public static double buhlmannEquation(double pressureN2, double pressureHe, double n2A, double n2B,
-                                          double heA, double heB, Double gf){
-        double pressure, gradientFactor, a, b, p_l;
-        if (gf == null){
-            gradientFactor = ZHL16.gfLow;
-        } else{
-            gradientFactor = gf;
+                                          double heA, double heB, Double gf) throws GradientFactorException{
+        double pressure, a, b, p_l;
+        if(gf <= 0 || gf > 1.5 || gf == null){
+            throw new GradientFactorException("Gradient factor out of acceptable range");
         }
         pressure = pressureN2 + pressureHe;
         a = (n2A * pressureN2 + heA * pressureHe) / pressure;
         b = (n2B * pressureN2 + heB * pressureHe) / pressure;
-        p_l = buhlmannP_l(pressure, a, b, gradientFactor);
+        p_l = buhlmannP_l(pressure, a, b, gf);
 
         return p_l;
     }

@@ -1,7 +1,7 @@
 package Buhlmann;
 
 public class GasMix {
-    private int depth;
+    private double depth;
     private int o2;
     private int n2;
     private int he;
@@ -13,7 +13,7 @@ public class GasMix {
         this.he = he;
     }
 
-    public int getDepth() {
+    public double getDepth() {
         return depth;
     }
 
