@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Run{
-    public ZHL16BGF model;
+    public ZHL16GF model;
     public int ascentRate;
     public int descentRate;
     public double meterToBar;
@@ -21,7 +21,7 @@ public class Run{
     public ArrayList<Step> steps = new ArrayList<>();
 
     public Run(){
-        this.model = new ZHL16BGF();
+        this.model = new ZHL16GF();
         this.ascentRate = 10;
         this.descentRate = 20;
         this.meterToBar = 0.09985;
@@ -106,9 +106,9 @@ public class Run{
      * @param compartmentData - Decompression model data
      * @return true/false iff the ceiling limit for the decompression limit hasn't been violated
      */
-    public static boolean ceilingLimitNotViolated(double absolutePressure, CompartmentData compartmentData)
+    public boolean ceilingLimitNotViolated(double absolutePressure, CompartmentData compartmentData)
             throws GradientFactorException {
-        return absolutePressure >= ZHL16GF.ceiling(compartmentData);
+        return absolutePressure >= model.ceiling(compartmentData);
     }
 
     /**
@@ -121,7 +121,7 @@ public class Run{
     public boolean canAscend(double absolutePressure, double time, CompartmentData data, double gf)
             throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
-        return pressure >= ZHL16GF.ceiling(data, gf);
+        return pressure >= model.ceiling(data, gf);
     }
 
     /**
@@ -131,7 +131,7 @@ public class Run{
      * @return first dive step
      */
     public Step stepStart(double absolutePressure, GasMix gas){
-        CompartmentData data = ZHL16GF.initialisePressure(surfacePressure);
+        CompartmentData data = model.initialisePressure(surfacePressure);
         Step step = new Step(DivePhase.START, absolutePressure, 0, gas, data);
         return step;
     }
@@ -143,12 +143,12 @@ public class Run{
      * @param phase - Dive phase
      * @return next dive step after time spent at current depth
      */
-    public static Step stepNext(Step step, double time, GasMix bottomGas, DivePhase phase){
+    public Step stepNext(Step step, double time, GasMix bottomGas, DivePhase phase){
         CompartmentData data = tissuePressureDive(step.getAbsolutePressure(), time, bottomGas, step.getData());
         return new Step(phase, step.getAbsolutePressure(), step.getTime() + time, bottomGas, data);
     }
 
-    public static Step stepNext(Step step, double time, GasMix bottomGas){
+    public Step stepNext(Step step, double time, GasMix bottomGas){
         CompartmentData data = tissuePressureDive(step.getAbsolutePressure(), time, bottomGas, step.getData());
         return new Step(DivePhase.DIVE, step.getAbsolutePressure(), step.getTime() + time, bottomGas, data);
     }
@@ -221,9 +221,9 @@ public class Run{
      * @param data - decompression model data
      * @return tissue gas loading after a certain amount of time at a certain depth
      */
-    public static CompartmentData tissuePressureDive(double absolutePressure, double time, GasMix gas,
+    public CompartmentData tissuePressureDive(double absolutePressure, double time, GasMix gas,
                                                      CompartmentData data){
-        return ZHL16GF.loadTissues(absolutePressure, time, gas, 0, data);
+        return model.loadTissues(absolutePressure, time, gas, 0, data);
     }
 
     /**
@@ -235,7 +235,7 @@ public class Run{
      */
     public CompartmentData tissuePressureDescent(double pressure, double time, GasMix gas, CompartmentData data){
         double rate = descentRate * meterToBar;
-        return ZHL16GF.loadTissues(pressure, time, gas, rate, data);
+        return model.loadTissues(pressure, time, gas, rate, data);
     }
 
     /**
@@ -248,7 +248,7 @@ public class Run{
     public CompartmentData tissuePressureAscent(double absolutePressure, double time, GasMix gas,
                                                        CompartmentData data){
         double rate = -ascentRate * meterToBar;
-        return ZHL16GF.loadTissues(absolutePressure, time, gas, rate, data);
+        return model.loadTissues(absolutePressure, time, gas, rate, data);
     }
 
     /**
@@ -270,16 +270,18 @@ public class Run{
      */
     public ArrayList<Step> diveDescent(double absolutePressure, ArrayList<GasMix> gasList) throws
             GasConfigException {
+        boolean descent = true;
         GasMix gas = gasList.get(0);
         Step step = stepStart(surfacePressure, gas);
         steps.add(step);
         ArrayList<Stage> stages = descentStages(absolutePressure, gasList);
+
         for (int i = 0; i < stages.size(); i++){
             if (i > 0){
                 step = gasSwitch(step, stages.get(i).getGas());
                 steps.add(step);
             }
-            double time = pressureToTime(stages.get(i).getGas().getDepth() - step.getAbsolutePressure(),
+            double time = pressureToTime(stages.get(i).getAbsolutePressure() - step.getAbsolutePressure(),
                     descentRate);
             step = nextStepDescent(step, time, gas);
             steps.add(step);
@@ -330,12 +332,12 @@ public class Run{
      * @return dive step if NDL dive is possible
      */
     public Step NDL(Step startingStep, GasMix gas) throws GradientFactorException {
-        double gf = ZHL16GF.gfHigh;
+        double gf = model.gfHigh;
         double pressure = startingStep.getAbsolutePressure() - surfacePressure;
         double time = pressureToTime(pressure, ascentRate);
         Step step = nextStepAscent(startingStep, time, gas, gf);
         startingStep.getData().setGf(gf);
-        double ceilingLimit = ZHL16GF.ceiling(startingStep.getData());
+        double ceilingLimit = model.ceiling(startingStep.getData());
         if (step.getAbsolutePressure() < ceilingLimit){
             step = null;
         }
@@ -356,14 +358,14 @@ public class Run{
         }
 
         Step step = startingStep;
-        double limit = ZHL16GF.ceiling(step.getData(), step.getData().getGf());
+        double limit = model.ceiling(step.getData(), step.getData().getGf());
         limit = pressureMetersDiv3(limit);
         limit = Math.max(absolutePressure, limit);
         double t = pressureToTime(step.getAbsolutePressure() - limit, ascentRate);
 
         while(step.getAbsolutePressure() > limit && step.getAbsolutePressure() > absolutePressure){
             step = nextStepAscent(step, t, gas);
-            limit = ZHL16GF.ceiling(step.getData(), step.getData().getGf());
+            limit = model.ceiling(step.getData(), step.getData().getGf());
             limit = pressureMetersDiv3(limit);
             limit = Math.max(absolutePressure, limit);
             t = pressureToTime(step.getAbsolutePressure() - limit, ascentRate);
@@ -639,7 +641,7 @@ public class Run{
         ArrayList<DecoStops> decoStops = new ArrayList<>();
         int n;
         int k = stops(step.getAbsolutePressure());
-        double gfStep = (ZHL16.gfHigh - ZHL16.gfLow) / k;
+        double gfStep = (model.gfHigh - model.gfLow) / k;
         double ts3m = pressureToTime(p3m, ascentRate);
         double gf = step.getData().getGf();
 
@@ -757,17 +759,15 @@ public class Run{
     public ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
             GradientFactorException, GasConfigException, EngineError {
         Step step = null;
-
+        ArrayList<Step> tempSteps;
         decompressionStopTable.clear();
         validateGasList(maxDepth);
         GasMix bottomGas = gasList.get(0);
         gasList = sortList(travelGasList);
         gasList.add(bottomGas);
-
         double absolutePressure = depthToPressure(maxDepth);
-        for (Step s:diveDescent(absolutePressure, gasList)){
-            steps.add(s);
-        }
+        tempSteps = diveDescent(absolutePressure, gasList);
+        step = tempSteps.get(tempSteps.size() - 1);
         ArrayList<GasMix> listToSort = gasList;
         listToSort.remove(0);
         gasList = sortList(listToSort);
@@ -858,11 +858,11 @@ public class Run{
         }
     }
 
-    public static Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step, GasMix gas){
+    public Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step, GasMix gas){
         return new Pair(time + maxTime, tissuePressureDive(step.getAbsolutePressure(), maxTime, gas, data));
     }
 
-    public static CompartmentData nextF(double k, Step step, GasMix gas, CompartmentData data){
+    public CompartmentData nextF(double k, Step step, GasMix gas, CompartmentData data){
         return tissuePressureDive(step.getAbsolutePressure(), k, gas, data);
     }
 
@@ -899,7 +899,7 @@ public class Run{
      */
     public boolean possibleAscent(double absolutePressure, double time, CompartmentData data) throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
-        return pressure >= ZHL16.ceiling(data);
+        return pressure >= model.ceiling(data);
     }
 
     /**
@@ -913,17 +913,17 @@ public class Run{
     public boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf) throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
         data.setGf(gf);
-        return pressure >= ZHL16.ceiling(data);
+        return pressure >= model.ceiling(data);
     }
 
 
     public static void main(String args[]) throws GradientFactorException, PressureException, GasConfigException {
-        Tests.testingDiveProfile();
-        System.out.println();
-        Tests.testingCeiling();
-        System.out.println();
-        Tests.testingDecoStop();
-        System.out.println();
+        // Tests.testingDiveProfile();
+        // System.out.println();
+        // Tests.testingCeiling();
+        // System.out.println();
+        // Tests.testingDecoStop();
+        // System.out.println();
         // Tests.testingPlanning();
     }
 }
