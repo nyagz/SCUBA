@@ -316,14 +316,16 @@ public class Run{
         step = startingStep;
 
         ArrayList<Stage> stages = decoFreeAscentStages(gasList);
-        steps.addAll(freeStagedAscent(step, stages));
+        ArrayList<Step> newSteps = freeStagedAscent(step, stages);
+        steps.addAll(newSteps);
+
+        step = newSteps.get(newSteps.size() - 1);
 
         if (Math.abs(step.getAbsolutePressure() - surfacePressure) < Math.pow(10, -10)){
-            throw new PressureException("Shouldn't be ath the surface - this stage is a non-ndl dive");
+            throw new PressureException("Shouldn't be at the surface - this stage is a non-ndl dive");
         }
 
         stages = decompressionAscentStages(step.getAbsolutePressure(), gasList);
-        ArrayList<Step> temp = decompressionStagedAscent(step, stages);
         steps.addAll(decompressionStagedAscent(step, stages));
         return steps;
     }
@@ -338,8 +340,7 @@ public class Run{
         double pressure = startingStep.getAbsolutePressure() - surfacePressure;
         double time = pressureToTime(pressure, ascentRate);
         Step step = nextStepAscent(startingStep, time, gas, gf);
-        startingStep.getData().setGf(gf); //fixme: is this needed?
-        double ceilingLimit = model.ceiling(startingStep.getData());
+        double ceilingLimit = model.ceiling(step.getData(), gf);
         if (step.getAbsolutePressure() < ceilingLimit){
             step = null; //
         }
@@ -669,6 +670,7 @@ public class Run{
         return decoStops;
     }
 
+    // FIXME: AHHHHHHHHHHHHHHHHHHHHHHH
     /**
      * Calculates a decompression stop
      * @param step - current decompression step
@@ -683,8 +685,8 @@ public class Run{
         if (canAscend(step.getAbsolutePressure(), nextTime, data, gf)){
             return new Step(DivePhase.DECO_STOP, step.getAbsolutePressure(), step.getTime() + 1, gas, data);
         }
-
         double maxTime = 8;
+
         double time = recurseWhile(1, data, maxTime, step, gf, gas, nextTime).getKey();
         CompartmentData newData = recurseWhile(1, data, maxTime, step, gf, gas, nextTime).getValue();
 
@@ -835,25 +837,14 @@ public class Run{
         return steps;
     }
 
-    /**
-     * FIXME: Add from above here
-     * Everything above here has been checked and reformatted :)
-     */
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /** Descent **/
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /** Ascent **/
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /** Need to sort these out **/
-
-    public Pair<Double, CompartmentData> recurseWhile(double time, CompartmentData data, double maxTime,
-                                                             Step step, double gf, GasMix gas, double nextTime) throws GradientFactorException {
+    //FIXME: AHHHHHHHHHHHH
+    public Pair<Double, CompartmentData> recurseWhile(double time, CompartmentData data, double maxTime, Step step,
+                                                      double gf, GasMix gas, double nextTime)
+            throws GradientFactorException {
         double newTime = nextTime;
         Pair<Double, CompartmentData> result = nextF(time, data, maxTime, step, gas);
         Pair<Object, Object> args = null;
-        while (invF(newTime, data, step, gf)) { // always true?
+        while (invF(newTime, result.getValue(), step, gf)) { // always true?
             args =  new Pair(result.getKey(), result.getValue());
             result = nextF(time, data, maxTime, step, gas);
             newTime = result.getKey();
@@ -887,8 +878,8 @@ public class Run{
         int hi = n + 1;
         int k;
         while (lo < hi){
-            k = (lo + hi) / 2;
-            if (canAscend(step.getAbsolutePressure(), k, nextF(k,step, gas, data), gf)){
+            k = (int) Math.floor((lo + hi) / 2.0);
+            if (!canAscend(step.getAbsolutePressure(), nextTime, tissuePressureDive(step.getAbsolutePressure(), k, gas, data), gf)){
                 lo = k + 1;
             } else{
                 hi = k;
@@ -896,6 +887,19 @@ public class Run{
         }
         return hi - 1; // hi is first k for which canAscend(k) is not true, so canAscend(hi - 1) is true
     }
+    /**
+     * FIXME: Add from above here
+     * Everything above here has been checked and reformatted :)
+     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /** Descent **/
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /** Ascent **/
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /** Need to sort these out **/
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Checks if it's possible to ascend without violating the ceiling limit
