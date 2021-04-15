@@ -316,13 +316,15 @@ public class Run{
         step = startingStep;
 
         ArrayList<Stage> stages = decoFreeAscentStages(gasList);
-        for(Step s: freeStagedAscent(step, stages)){
-            steps.add(s);
+        steps.addAll(freeStagedAscent(step, stages));
+
+        if (Math.abs(step.getAbsolutePressure() - surfacePressure) < Math.pow(10, -10)){
+            throw new PressureException("Shouldn't be ath the surface - this stage is a non-ndl dive");
         }
 
         stages = decompressionAscentStages(step.getAbsolutePressure(), gasList);
         ArrayList<Step> temp = decompressionStagedAscent(step, stages);
-        steps.addAll(temp);
+        steps.addAll(decompressionStagedAscent(step, stages));
         return steps;
     }
 
@@ -336,10 +338,10 @@ public class Run{
         double pressure = startingStep.getAbsolutePressure() - surfacePressure;
         double time = pressureToTime(pressure, ascentRate);
         Step step = nextStepAscent(startingStep, time, gas, gf);
-        startingStep.getData().setGf(gf);
+        startingStep.getData().setGf(gf); //fixme: is this needed?
         double ceilingLimit = model.ceiling(startingStep.getData());
         if (step.getAbsolutePressure() < ceilingLimit){
-            step = null;
+            step = null; //
         }
         return step;
     }
@@ -408,12 +410,13 @@ public class Run{
         ArrayList<Mix> gasMixes = new ArrayList<>();
         ArrayList<Stage> decoFreeStages = new ArrayList<>();
         double temp2;
+
         for (int i = 0; i < gasList.size() - 1; i++){
             Mix temp = new Mix(gasList.get(i), gasList.get(1 + i));
             gasMixes.add(temp);
         }
-        for (Mix mix:gasMixes){
 
+        for (Mix mix:gasMixes){
             temp2 = depthToPressure((mix.getSecondGas().getDepth() - 1.0) / 3.0);
             Stage temp = new Stage((Math.floor(temp2) + 1) * 3, mix.getFirstGas());
             decoFreeStages.add(temp);
@@ -608,13 +611,15 @@ public class Run{
     public ArrayList<Step> decompressionStagedAscent(Step start, ArrayList<Stage> stages)
             throws GradientFactorException, PressureException {
         ArrayList<Step> steps = new ArrayList<>();
+        ArrayList<Step> temp;
         GasMix bottomGas = gasList.get(0);
         ArrayList<DecoStops> decoStages = decompressionStops(start, stages);
         Step step = start;
         for (DecoStops d: decoStages){
             // Switch the gas
             if (step.getAbsolutePressure() >= depthToPressure(d.getGas().getDepth()) && d.getGas() != bottomGas){
-                for(Step s: ascentSwitchGas(step, d.getGas())){
+                temp = ascentSwitchGas(step, d.getGas());
+                for(Step s: temp){
                     steps.add(s);
                 }
             }
@@ -648,18 +653,18 @@ public class Run{
         double pressure = step.getAbsolutePressure();
         double sixMeterStop = surfacePressure + 2 * (3 * meterToBar);
         for (Stage s:stages){
-            n = stops(pressure, s.getGas().getDepth());
+            n = stops(pressure, s.getAbsolutePressure());
             for (int i = 0; i < n; i++){
                 gf += gfStep;
                 if (lastStop6m && Math.abs(pressure - i * (meterToBar * 3) - sixMeterStop) < Math.pow(10, -10)){
-                    decoStops.add(new DecoStops(s.getGas().getDepth(), s.getGas(), 2 * ts3m,
+                    decoStops.add(new DecoStops(s.getAbsolutePressure(), s.getGas(), 2 * ts3m,
                             gf + gfStep));
                     break;
                 } else{
-                    decoStops.add(new DecoStops(s.getGas().getDepth(), s.getGas(), ts3m, gf));
+                    decoStops.add(new DecoStops(s.getAbsolutePressure(), s.getGas(), ts3m, gf));
                 }
             }
-            pressure = s.getGas().getDepth();
+            pressure = s.getAbsolutePressure();
         }
         return decoStops;
     }
@@ -781,11 +786,11 @@ public class Run{
         steps.add(step);
 
         ArrayList<Step> ascentSteps = diveAscent(step, gasList);
-        // FIXME: Should this be deleted?
-        for (Step s: ascentSteps){
-            steps.add(s);
-        }
-        steps.addAll(diveAscent(step, gasList));
+        // FIXME: Should this for loop be deleted?
+        // for (Step s: ascentSteps){
+        //     steps.add(s);
+        // }
+        steps.addAll(ascentSteps);
         return steps;
     }
 
