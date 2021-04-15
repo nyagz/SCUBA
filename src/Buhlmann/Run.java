@@ -726,7 +726,7 @@ public class Run{
 
     /**
      * Used to sort the GasMix arrays based on depth
-     * @param list
+     * @param list - list to be sorted
      * @return sorted arrayList
      */
     public static ArrayList<GasMix> sortList(ArrayList<GasMix> list){
@@ -781,6 +781,7 @@ public class Run{
         steps.add(step);
 
         ArrayList<Step> ascentSteps = diveAscent(step, gasList);
+        // FIXME: Should this be deleted?
         for (Step s: ascentSteps){
             steps.add(s);
         }
@@ -788,6 +789,7 @@ public class Run{
         return steps;
     }
 
+    // TODO: Check if needs to be updated based on plan above
     public ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent) throws PressureException,
             GradientFactorException, GasConfigException, EngineError {
         Step step = null;

@@ -91,6 +91,7 @@ public class Tests {
         Run engine = new Run();
         engine.addGas(0, 21);
         ArrayList<Step> profile = engine.plan(35, 40);
+        System.out.println("Start:");
         for (Step p: profile){
             System.out.println("Step(phase = " + p.getPhase() + ", abs_p = " + p.getAbsolutePressure() + ", time = " +
                     p.getTime() + ", gf = " + p.getData().getGf() + ")");

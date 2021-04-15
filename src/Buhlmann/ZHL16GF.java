@@ -157,7 +157,7 @@ public class ZHL16GF extends ZHL16BGF{
         if (gf == null){
             gf = gfLow;
         }
-        if(gf < 0 || gf <1.5){
+        if(gf < 0 || gf > 1.5){
             throw new GradientFactorException("Gradient factor out of range");
         }
 
