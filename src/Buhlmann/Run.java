@@ -6,32 +6,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Run{
-    public static ZHL16BGF model;
-    public static int ascentRate;
-    public static int descentRate;
-    public static double meterToBar;
-    public static double surfacePressure;
-    public static boolean lastStop6m;
-    public static int decoStopSearchTime;
-    public static double p3m;
+    public ZHL16GF model;
+    public int ascentRate;
+    public int descentRate;
+    public double meterToBar;
+    public double surfacePressure;
+    public boolean lastStop6m;
+    public int decoStopSearchTime;
+    public double p3m;
 
-    public static ArrayList<GasMix> gasList;
-    public static ArrayList<GasMix> travelGasList = new ArrayList<>();
-    public static ArrayList<DecoStop> decompressionStopTable = new ArrayList<>();
-    public static ArrayList<Step> steps = new ArrayList<>();
+    public ArrayList<GasMix> gasList;
+    public ArrayList<GasMix> travelGasList = new ArrayList<>();
+    public ArrayList<DecoStop> decompressionStopTable = new ArrayList<>();
+    public ArrayList<Step> steps = new ArrayList<>();
 
     public Run(){
-        model = new ZHL16BGF();
-        ascentRate = 10;
-        descentRate = 20;
-        meterToBar = 0.09985;
-        surfacePressure = 1.01325;
-        decoStopSearchTime = 8;
-        p3m = 3 * meterToBar;
-        lastStop6m = false;
+        this.model = new ZHL16GF();
+        this.ascentRate = 10;
+        this.descentRate = 20;
+        this.meterToBar = 0.09985;
+        this.surfacePressure = 1.01325;
+        this.decoStopSearchTime = 8;
+        this.p3m = 3 * meterToBar;
+        this.lastStop6m = false;
 
-        gasList = new ArrayList<>();
-        travelGasList = new ArrayList<>();
+        this.gasList = new ArrayList<>();
+        this.travelGasList = new ArrayList<>();
     }
 
     // Helper functions
@@ -40,7 +40,7 @@ public class Run{
      * @param depth
      * @return
      */
-    public static double depthToPressure(double depth){
+    public double depthToPressure(double depth){
         return depth * meterToBar + surfacePressure;
     }
 
@@ -49,7 +49,7 @@ public class Run{
      * @param absolutePressure
      * @return
      */
-    public static double pressureToDepth(double absolutePressure){
+    public double pressureToDepth(double absolutePressure){
         return Math.round((absolutePressure - surfacePressure) / meterToBar);
     }
 
@@ -59,7 +59,7 @@ public class Run{
      * @param rate
      * @return
      */
-    public static double timeToPressure(double time, double rate){
+    public double timeToPressure(double time, double rate){
         return time * rate * meterToBar;
     }
 
@@ -69,7 +69,7 @@ public class Run{
      * @param rate
      * @return
      */
-    public static double pressureToTime(double pressure, double rate){
+    public double pressureToTime(double pressure, double rate){
         return pressure / rate / meterToBar;
     }
 
@@ -78,7 +78,7 @@ public class Run{
      * @param absolutePressure
      * @return
      */
-    public static double pressureMetersDiv3(double absolutePressure){
+    public double pressureMetersDiv3(double absolutePressure){
         double result = Math.ceil((absolutePressure - surfacePressure) / (3 * meterToBar));
         return result * (meterToBar * 3) + surfacePressure;
     }
@@ -88,7 +88,7 @@ public class Run{
      * @param endPressure - absolute pressure at the ending depth [bar]
      * @return - number of decompression stops needed
      */
-    public static int stops(double startPressure, Double endPressure){
+    public int stops(double startPressure, Double endPressure){
         if (endPressure == null){
             endPressure = surfacePressure;
         }
@@ -96,7 +96,7 @@ public class Run{
         return (int) k;
     }
 
-    public static int stops(double startPressure){
+    public int stops(double startPressure){
         double k = (startPressure - surfacePressure) / (3 * meterToBar);
         return (int) k;
     }
@@ -106,9 +106,9 @@ public class Run{
      * @param compartmentData - Decompression model data
      * @return true/false iff the ceiling limit for the decompression limit hasn't been violated
      */
-    public static boolean ceilingLimitNotViolated(double absolutePressure, CompartmentData compartmentData)
+    public boolean ceilingLimitNotViolated(double absolutePressure, CompartmentData compartmentData)
             throws GradientFactorException {
-        return absolutePressure >= ZHL16GF.ceiling(compartmentData);
+        return absolutePressure >= model.ceiling(compartmentData);
     }
 
     /**
@@ -118,10 +118,10 @@ public class Run{
      * @param gf - gf for ceiling
      * @return true/false if diver can ascend from current depth without violating their ascent ceiling
      */
-    public static boolean canAscend(double absolutePressure, double time, CompartmentData data, double gf)
+    public boolean canAscend(double absolutePressure, double time, CompartmentData data, double gf)
             throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
-        return pressure >= ZHL16GF.ceiling(data, gf);
+        return pressure >= model.ceiling(data, gf);
     }
 
     /**
@@ -130,8 +130,8 @@ public class Run{
      * @param gas - GasMix
      * @return first dive step
      */
-    public static Step stepStart(double absolutePressure, GasMix gas){
-        CompartmentData data = ZHL16GF.initialisePressure(surfacePressure);
+    public Step stepStart(double absolutePressure, GasMix gas){
+        CompartmentData data = model.initialisePressure(surfacePressure);
         Step step = new Step(DivePhase.START, absolutePressure, 0, gas, data);
         return step;
     }
@@ -143,12 +143,12 @@ public class Run{
      * @param phase - Dive phase
      * @return next dive step after time spent at current depth
      */
-    public static Step stepNext(Step step, double time, GasMix bottomGas, DivePhase phase){
+    public Step stepNext(Step step, double time, GasMix bottomGas, DivePhase phase){
         CompartmentData data = tissuePressureDive(step.getAbsolutePressure(), time, bottomGas, step.getData());
         return new Step(phase, step.getAbsolutePressure(), step.getTime() + time, bottomGas, data);
     }
 
-    public static Step stepNext(Step step, double time, GasMix bottomGas){
+    public Step stepNext(Step step, double time, GasMix bottomGas){
         CompartmentData data = tissuePressureDive(step.getAbsolutePressure(), time, bottomGas, step.getData());
         return new Step(DivePhase.DIVE, step.getAbsolutePressure(), step.getTime() + time, bottomGas, data);
     }
@@ -161,20 +161,20 @@ public class Run{
      * @param phase - Dive phase
      * @return next dive step after descending for time
      */
-    public static Step nextStepDescent(Step step, double time, GasMix gas, DivePhase phase, double gf){
+    public Step nextStepDescent(Step step, double time, GasMix gas, DivePhase phase, double gf){
         CompartmentData data = tissuePressureDescent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() + timeToPressure(time, descentRate);
         data.setGf(gf);
         return new Step(phase, pressure, step.getTime() + time, gas, data);
     }
 
-    public static Step nextStepDescent(Step step, double time, GasMix gas, DivePhase phase){
+    public Step nextStepDescent(Step step, double time, GasMix gas, DivePhase phase){
         CompartmentData data = tissuePressureDescent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() + timeToPressure(time, descentRate);
         return new Step(phase, pressure, step.getTime() + time, gas, data);
     }
 
-    public static Step nextStepDescent(Step step, double time, GasMix gas){
+    public Step nextStepDescent(Step step, double time, GasMix gas){
         CompartmentData data = tissuePressureDescent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() + timeToPressure(time, descentRate);
         return new Step(DivePhase.DESCENT, pressure, step.getTime() + time, gas, data);
@@ -188,27 +188,27 @@ public class Run{
      * @param phase - dive phase
      * @return next dive step when ascending for a certain amount of time
      */
-    public static Step nextStepAscent(Step step, double time, GasMix gas, double gf, DivePhase phase){
+    public Step nextStepAscent(Step step, double time, GasMix gas, double gf, DivePhase phase){
         CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
         data.setGf(gf);
         return new Step(phase, pressure, step.getTime() + time, gas, data);
     }
 
-    public static Step nextStepAscent(Step step, double time, GasMix gas){
+    public Step nextStepAscent(Step step, double time, GasMix gas){
         CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
         return new Step(DivePhase.ASCENT, pressure, step.getTime() + time, gas, data);
     }
 
-    public static Step nextStepAscent(Step step, double time, GasMix gas, double gf){
+    public Step nextStepAscent(Step step, double time, GasMix gas, double gf){
         CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
         data.setGf(gf);
         return new Step(DivePhase.ASCENT, pressure, step.getTime() + time, gas, data);
     }
 
-    public static Step nextStepAscent(Step step, double time, GasMix gas, DivePhase phase){
+    public Step nextStepAscent(Step step, double time, GasMix gas, DivePhase phase){
         CompartmentData data = tissuePressureAscent(step.getAbsolutePressure(), time, gas, step.getData());
         double pressure = step.getAbsolutePressure() - timeToPressure(time, ascentRate);
         return new Step(phase, pressure, step.getTime() + time, gas, data);
@@ -221,9 +221,9 @@ public class Run{
      * @param data - decompression model data
      * @return tissue gas loading after a certain amount of time at a certain depth
      */
-    public static CompartmentData tissuePressureDive(double absolutePressure, double time, GasMix gas,
+    public CompartmentData tissuePressureDive(double absolutePressure, double time, GasMix gas,
                                                      CompartmentData data){
-        return ZHL16GF.loadTissues(absolutePressure, time, gas, 0, data);
+        return model.loadTissues(absolutePressure, time, gas, 0, data);
     }
 
     /**
@@ -233,9 +233,9 @@ public class Run{
      * @param data - decompression model data
      * @return tissues gas after descent
      */
-    public static CompartmentData tissuePressureDescent(double pressure, double time, GasMix gas, CompartmentData data){
+    public CompartmentData tissuePressureDescent(double pressure, double time, GasMix gas, CompartmentData data){
         double rate = descentRate * meterToBar;
-        return ZHL16GF.loadTissues(pressure, time, gas, rate, data);
+        return model.loadTissues(pressure, time, gas, rate, data);
     }
 
     /**
@@ -245,10 +245,10 @@ public class Run{
      * @param data - decompression model data
      * @return tissues pressure after ascent
      */
-    public static CompartmentData tissuePressureAscent(double absolutePressure, double time, GasMix gas,
+    public CompartmentData tissuePressureAscent(double absolutePressure, double time, GasMix gas,
                                                        CompartmentData data){
         double rate = -ascentRate * meterToBar;
-        return ZHL16GF.loadTissues(absolutePressure, time, gas, rate, data);
+        return model.loadTissues(absolutePressure, time, gas, rate, data);
     }
 
     /**
@@ -268,18 +268,20 @@ public class Run{
      * @param gasList - list of all gas mixes
      * @return Descent from surface to absolute pressure of destination
      */
-    public static ArrayList<Step> diveDescent(double absolutePressure, ArrayList<GasMix> gasList) throws
+    public ArrayList<Step> diveDescent(double absolutePressure, ArrayList<GasMix> gasList) throws
             GasConfigException {
+        boolean descent = true;
         GasMix gas = gasList.get(0);
         Step step = stepStart(surfacePressure, gas);
         steps.add(step);
         ArrayList<Stage> stages = descentStages(absolutePressure, gasList);
+
         for (int i = 0; i < stages.size(); i++){
             if (i > 0){
                 step = gasSwitch(step, stages.get(i).getGas());
                 steps.add(step);
             }
-            double time = pressureToTime(stages.get(i).getGas().getDepth() - step.getAbsolutePressure(),
+            double time = pressureToTime(stages.get(i).getAbsolutePressure() - step.getAbsolutePressure(),
                     descentRate);
             step = nextStepDescent(step, time, gas);
             steps.add(step);
@@ -301,7 +303,7 @@ public class Run{
      * @param gasList - list of all gases
      * @return dive steps needed to ascent from the current depth to the surface
      */
-    public static ArrayList<Step> diveAscent(Step startingStep, ArrayList<GasMix> gasList)
+    public ArrayList<Step> diveAscent(Step startingStep, ArrayList<GasMix> gasList)
             throws GradientFactorException, PressureException {
         GasMix bottomGas = gasList.get(0);
         ArrayList<Step> steps = new ArrayList<>();
@@ -329,13 +331,13 @@ public class Run{
      * @param gas - gas mix
      * @return dive step if NDL dive is possible
      */
-    public static Step NDL(Step startingStep, GasMix gas) throws GradientFactorException {
-        double gf = ZHL16GF.gfHigh;
+    public Step NDL(Step startingStep, GasMix gas) throws GradientFactorException {
+        double gf = model.gfHigh;
         double pressure = startingStep.getAbsolutePressure() - surfacePressure;
         double time = pressureToTime(pressure, ascentRate);
         Step step = nextStepAscent(startingStep, time, gas, gf);
         startingStep.getData().setGf(gf);
-        double ceilingLimit = ZHL16GF.ceiling(startingStep.getData());
+        double ceilingLimit = model.ceiling(startingStep.getData());
         if (step.getAbsolutePressure() < ceilingLimit){
             step = null;
         }
@@ -348,7 +350,7 @@ public class Run{
      * @param gas - gas mix
      * @return first decompression stop using Schreiner's
      */
-    public static Step findFirstDecoStop(Step startingStep, double absolutePressure, GasMix gas)
+    public Step findFirstDecoStop(Step startingStep, double absolutePressure, GasMix gas)
             throws PressureException, GradientFactorException {
         if (startingStep.getAbsolutePressure() < absolutePressure){
             throw new PressureException("Starting step's pressure should be less than the absolute pressure at the " +
@@ -356,14 +358,14 @@ public class Run{
         }
 
         Step step = startingStep;
-        double limit = ZHL16GF.ceiling(step.getData(), step.getData().getGf());
+        double limit = model.ceiling(step.getData(), step.getData().getGf());
         limit = pressureMetersDiv3(limit);
         limit = Math.max(absolutePressure, limit);
         double t = pressureToTime(step.getAbsolutePressure() - limit, ascentRate);
 
         while(step.getAbsolutePressure() > limit && step.getAbsolutePressure() > absolutePressure){
             step = nextStepAscent(step, t, gas);
-            limit = ZHL16GF.ceiling(step.getData(), step.getData().getGf());
+            limit = model.ceiling(step.getData(), step.getData().getGf());
             limit = pressureMetersDiv3(limit);
             limit = Math.max(absolutePressure, limit);
             t = pressureToTime(step.getAbsolutePressure() - limit, ascentRate);
@@ -382,7 +384,7 @@ public class Run{
      * @param gasList - list of all gases
      * @return stages for the dives descent
      */
-    public static ArrayList<Stage> descentStages(double absolutePressure, ArrayList<GasMix> gasList){
+    public ArrayList<Stage> descentStages(double absolutePressure, ArrayList<GasMix> gasList){
         ArrayList<Stage> descentStages = new ArrayList<>();
         ArrayList<Mix> mixes = new ArrayList<>();
         for (int i = 0; i < gasList.size() - 1; i++){
@@ -402,7 +404,7 @@ public class Run{
      * @param gasList - list of all gases
      * @return stages for a DCS-free ascent
      */
-    public static ArrayList<Stage> decoFreeAscentStages(ArrayList<GasMix> gasList){
+    public ArrayList<Stage> decoFreeAscentStages(ArrayList<GasMix> gasList){
         ArrayList<Mix> gasMixes = new ArrayList<>();
         ArrayList<Stage> decoFreeStages = new ArrayList<>();
         double temp2;
@@ -425,7 +427,7 @@ public class Run{
      * @param gasList - list of all gases
      * @return stages for decompression ascent
      */
-    public static ArrayList<Stage> decompressionAscentStages(double absolutePressure, ArrayList<GasMix> gasList)
+    public ArrayList<Stage> decompressionAscentStages(double absolutePressure, ArrayList<GasMix> gasList)
             throws PressureException {
         ArrayList<Stage> stages = new ArrayList<>();
         ArrayList<Mix> gasMixes = new ArrayList<>();
@@ -461,7 +463,7 @@ public class Run{
      * @param depth - max dive depth
      * @throws GasConfigException if gas mix rules are violated
      */
-    public static void validateGasList(double depth) throws GasConfigException {
+    public void validateGasList(double depth) throws GasConfigException {
         if(gasList.isEmpty()){
             throw new GasConfigException("No bottom gas mix has been added");
         }
@@ -469,37 +471,39 @@ public class Run{
             throw new GasConfigException("Bottom gas switch depth isn't 0m");
         }
         int k = travelGasList.size();
-        double[] depths = new double[travelGasList.size()];
-        for(int i = 0; i < travelGasList.size(); i++) {
-            depths[i] = travelGasList.get(i).getDepth();
-        }
-        Arrays.sort(depths);
-        if(removeDuplicateDepths(depths).size() != k){
-            throw new GasConfigException("Two or more travel gases have the same switch depth");
-        }
-        k = gasList.size() - 1;
-        depths = new double[gasList.size() - 1];
-        for(int i = 1; i < gasList.size(); i++){
-            depths[i] = gasList.get(i).getDepth();
-        }
-        Arrays.sort(depths);
-        if(removeDuplicateDepths(depths).size() != k){
-            throw new GasConfigException("Two or more decompression gasses have the same switch depth");
-        }
-        for(double d: depths){
-            if(d == 0){
-                throw new GasConfigException("Decompression gas mix switch depth is 0m");
+        if (travelGasList.size() != 0){
+            double[] depths = new double[travelGasList.size()];
+            for(int i = 0; i < travelGasList.size(); i++) {
+                depths[i] = travelGasList.get(i).getDepth();
             }
-        }
+            Arrays.sort(depths);
+            if(removeDuplicateDepths(depths).size() != k){
+                throw new GasConfigException("Two or more travel gases have the same switch depth");
+            }
+            k = gasList.size() - 1;
+            depths = new double[gasList.size() - 1];
+            for(int i = 1; i < gasList.size(); i++){
+                depths[i] = gasList.get(i).getDepth();
+            }
+            Arrays.sort(depths);
+            if(removeDuplicateDepths(depths).size() != k){
+                throw new GasConfigException("Two or more decompression gasses have the same switch depth");
+            }
+            for(double d: depths){
+                if(d == 0){
+                    throw new GasConfigException("Decompression gas mix switch depth is 0m");
+                }
+            }
 
-        for (GasMix m: gasList){
-            if(m.getDepth() > depth){
-                throw new GasConfigException("Gas mix switch deeper than maximum dive depth");
+            for (GasMix m: gasList){
+                if(m.getDepth() > depth){
+                    throw new GasConfigException("Gas mix switch deeper than maximum dive depth");
+                }
             }
-        }
-        for (GasMix m: travelGasList){
-            if(m.getDepth() > depth){
-                throw new GasConfigException("Gas mix switch deeper than maximum dive depth");
+            for (GasMix m: travelGasList){
+                if(m.getDepth() > depth){
+                    throw new GasConfigException("Gas mix switch deeper than maximum dive depth");
+                }
             }
         }
     }
@@ -508,7 +512,10 @@ public class Run{
      * @param depths - array to remove duplicates from
      * @return -Array list of integers for array (depths) without any duplicated entries
      */
-    public static ArrayList<Double> removeDuplicateDepths(double[] depths){
+    public ArrayList<Double> removeDuplicateDepths(double[] depths){
+        if (depths.length == 0){
+            return null;
+        }
         ArrayList<Double> nodubs = new ArrayList<>();
         nodubs.add(depths[0]);
         for(int i = 1; i < depths.length; i++){
@@ -519,12 +526,13 @@ public class Run{
         return nodubs;
     }
 
+
     /**
      * @param step - current dive step
      * @param gas - gas to switch to
      * @return dive step once gas has been switched
      */
-    public static ArrayList<Step> ascentSwitchGas(Step step, GasMix gas) throws PressureException {
+    public ArrayList<Step> ascentSwitchGas(Step step, GasMix gas) throws PressureException {
         ArrayList<Step> steps = new ArrayList<>();
         double gasPressure = depthToPressure(gas.getDepth());
         if(step.getAbsolutePressure() - gasPressure > p3m){
@@ -558,7 +566,7 @@ public class Run{
      * @param stages - dive stages
      * @return ascent until first decompression stop
      */
-    public static ArrayList<Step> freeStagedAscent(Step start, ArrayList<Stage> stages) throws GradientFactorException,
+    public ArrayList<Step> freeStagedAscent(Step start, ArrayList<Stage> stages) throws GradientFactorException,
             PressureException {
         ArrayList<Step> steps = new ArrayList<>();
         ArrayList<Step> tempSteps;
@@ -597,7 +605,7 @@ public class Run{
      * @param stages
      * @return
      */
-    public static ArrayList<Step> decompressionStagedAscent(Step start, ArrayList<Stage> stages)
+    public ArrayList<Step> decompressionStagedAscent(Step start, ArrayList<Stage> stages)
             throws GradientFactorException, PressureException {
         ArrayList<Step> steps = new ArrayList<>();
         GasMix bottomGas = gasList.get(0);
@@ -621,7 +629,6 @@ public class Run{
             step = nextStepAscent(step, d.getAscentTime(), d.getGas(), d.getNextGf());
             steps.add(step);
         }
-
         return steps;
     }
 
@@ -630,11 +637,11 @@ public class Run{
      * @param stages - decompression ascent stages
      * @return A collection of decompression stops
      */
-    public static ArrayList<DecoStops> decompressionStops(Step step, ArrayList<Stage> stages){
+    public ArrayList<DecoStops> decompressionStops(Step step, ArrayList<Stage> stages){
         ArrayList<DecoStops> decoStops = new ArrayList<>();
         int n;
         int k = stops(step.getAbsolutePressure());
-        double gfStep = (ZHL16.gfHigh - ZHL16.gfLow) / k;
+        double gfStep = (model.gfHigh - model.gfLow) / k;
         double ts3m = pressureToTime(p3m, ascentRate);
         double gf = step.getData().getGf();
 
@@ -665,7 +672,7 @@ public class Run{
      * @param gf - gradient factor of next decompression stop
      * @return a decompression stop
      */
-    public static Step decompressionStop(Step step, double nextTime, GasMix gas, double gf)
+    public Step decompressionStop(Step step, double nextTime, GasMix gas, double gf)
             throws GradientFactorException {
         CompartmentData data = tissuePressureDive(step.getAbsolutePressure(), 1, gas, step.getData());
         if (canAscend(step.getAbsolutePressure(), nextTime, data, gf)){
@@ -692,19 +699,19 @@ public class Run{
      * @param he - percentage of gas that's He
      * @param travel - boolean to show if gas is a travel gas (if not specified assume true)
      */
-    public static void addGas(int depth, int o2, int he, boolean travel){
+    public void addGas(int depth, int o2, int he, boolean travel){
         if (travel == true){
             travelGasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
         } else{
             gasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
         }
     }
-    public static void addGas(int depth, int o2){
+    public void addGas(int depth, int o2){
         int he = 0;
         gasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
     }
 
-    public static void addGas(int depth, int o2, boolean travel){
+    public void addGas(int depth, int o2, boolean travel){
         int he = 0;
         if (travel == true) {
             travelGasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
@@ -713,13 +720,13 @@ public class Run{
         }
     }
 
-    public static void addGas(int depth, int o2, int he){
+    public void addGas(int depth, int o2, int he){
         gasList.add(new GasMix(depth, o2, 100 - o2 - he, he));
     }
 
     /**
      * Used to sort the GasMix arrays based on depth
-     * @param list
+     * @param list - list to be sorted
      * @return sorted arrayList
      */
     public static ArrayList<GasMix> sortList(ArrayList<GasMix> list){
@@ -749,21 +756,18 @@ public class Run{
      * @param bottomTime
      * @return
      */
-    public static ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
+    public ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
             GradientFactorException, GasConfigException, EngineError {
         Step step = null;
-        boolean descent = true;
-
+        ArrayList<Step> tempSteps;
         decompressionStopTable.clear();
         validateGasList(maxDepth);
         GasMix bottomGas = gasList.get(0);
         gasList = sortList(travelGasList);
         gasList.add(bottomGas);
-
         double absolutePressure = depthToPressure(maxDepth);
-        for (Step s:diveDescent(absolutePressure, gasList)){
-            steps.add(s);
-        }
+        tempSteps = diveDescent(absolutePressure, gasList);
+        step = tempSteps.get(tempSteps.size() - 1);
         ArrayList<GasMix> listToSort = gasList;
         listToSort.remove(0);
         gasList = sortList(listToSort);
@@ -777,6 +781,7 @@ public class Run{
         steps.add(step);
 
         ArrayList<Step> ascentSteps = diveAscent(step, gasList);
+        // FIXME: Should this be deleted?
         for (Step s: ascentSteps){
             steps.add(s);
         }
@@ -784,7 +789,8 @@ public class Run{
         return steps;
     }
 
-    public static ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent) throws PressureException,
+    // TODO: Check if needs to be updated based on plan above
+    public ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent) throws PressureException,
             GradientFactorException, GasConfigException, EngineError {
         Step step = null;
 
@@ -836,70 +842,8 @@ public class Run{
         /** Ascent **/
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /** Need to sort these out **/
-    /**
-     * Calculates the next dive startingStep while ascending
-     * @param currentStep
-     * @param time
-     * @param gas
-     * @return
-     */
-    public static Step nextDiveStepAscent(Step currentStep, double time, GasMix gas){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
-                currentStep.getData());
-        double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
-        return new Step(DivePhase.ASCENT, pressure, currentStep.getTime() + time, gas, data);
-    }
 
-    /**
-     * Calculates the next dive step while ascending (if gradient factor is specified)
-     * @param currentStep
-     * @param time
-     * @param gas
-     * @param gf
-     * @return
-     */
-    public static Step nextDiveStepAscent(Step currentStep, double time, GasMix gas, double gf){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
-                currentStep.getData());
-        double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
-        data.setGf(gf);
-        return new Step(DivePhase.ASCENT, pressure, currentStep.getTime() + time, gas, data);
-    }
-
-    /**
-     * Calculates the next dive step while ascending (if phase is specified)
-     * @param currentStep
-     * @param time
-     * @param gas
-     * @param phase
-     * @return
-     */
-    public static Step nextDiveStepAscent(Step currentStep, double time, GasMix gas, DivePhase phase){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
-                currentStep.getData());
-        double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
-        return new Step(phase, pressure, currentStep.getTime() + time, gas, data);
-    }
-
-    /**
-     * Calculates the next dive step while ascending (if dive phase and gradient factor are specified)
-     * @param currentStep
-     * @param time
-     * @param gas
-     * @param phase
-     * @param gf
-     * @return
-     */
-    public static Step nextDiveStepAscent(Step currentStep, double time, GasMix gas, DivePhase phase, double gf){
-        CompartmentData data = tissuePressureAscent(currentStep.getAbsolutePressure(), time, gas,
-                currentStep.getData());
-        double pressure = currentStep.getAbsolutePressure() - (time * ascentRate * meterToBar);
-        data.setGf(gf);
-        return new Step(phase, pressure, currentStep.getTime() + time, gas, data);
-
-    }
-
-    public static Pair<Double, CompartmentData> recurseWhile(double time, CompartmentData data, double maxTime,
+    public Pair<Double, CompartmentData> recurseWhile(double time, CompartmentData data, double maxTime,
                                                              Step step, double gf, GasMix gas, double nextTime) throws GradientFactorException {
         double newTime = nextTime;
         Pair<Double, CompartmentData> result = nextF(time, data, maxTime, step, gas);
@@ -916,16 +860,16 @@ public class Run{
         }
     }
 
-    public static Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step, GasMix gas){
+    public Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step, GasMix gas){
         return new Pair(time + maxTime, tissuePressureDive(step.getAbsolutePressure(), maxTime, gas, data));
     }
 
-    public static CompartmentData nextF(double k, Step step, GasMix gas, CompartmentData data){
+    public CompartmentData nextF(double k, Step step, GasMix gas, CompartmentData data){
         return tissuePressureDive(step.getAbsolutePressure(), k, gas, data);
     }
 
 
-    public static boolean invF(double nextTime, CompartmentData data, Step step, double gf) throws GradientFactorException {
+    public boolean invF(double nextTime, CompartmentData data, Step step, double gf) throws GradientFactorException {
         if (canAscend(step.getAbsolutePressure(), nextTime, data, gf) == true){
             return false;
         } else{
@@ -933,7 +877,7 @@ public class Run{
         }
     }
 
-    public static int bisectFind(int n, Step step, double gf, GasMix gas, CompartmentData data, double nextTime) throws GradientFactorException {
+    public int bisectFind(int n, Step step, double gf, GasMix gas, CompartmentData data, double nextTime) throws GradientFactorException {
         int lo = 1;
         int hi = n + 1;
         int k;
@@ -955,9 +899,9 @@ public class Run{
      * @param data
      * @return
      */
-    public static boolean possibleAscent(double absolutePressure, double time, CompartmentData data) throws GradientFactorException {
+    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data) throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
-        return pressure >= ZHL16.ceiling(data);
+        return pressure >= model.ceiling(data);
     }
 
     /**
@@ -968,20 +912,20 @@ public class Run{
      * @param gf
      * @return
      */
-    public static boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf) throws GradientFactorException {
+    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf) throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
         data.setGf(gf);
-        return pressure >= ZHL16.ceiling(data);
+        return pressure >= model.ceiling(data);
     }
 
 
     public static void main(String args[]) throws GradientFactorException, PressureException, GasConfigException {
-        Tests.testingDiveProfile();
-        System.out.println();
-        Tests.testingCeiling();
-        System.out.println();
-        Tests.testingDecoStop();
-        System.out.println();
-        Tests.testingPlanning();
+        // Tests.testingDiveProfile();
+        // System.out.println();
+        // Tests.testingCeiling();
+        // System.out.println();
+        // Tests.testingDecoStop();
+        // System.out.println();
+        // Tests.testingPlanning();
     }
 }
