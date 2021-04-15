@@ -613,6 +613,8 @@ public class Run{
             throws GradientFactorException, PressureException {
         ArrayList<Step> steps = new ArrayList<>();
         ArrayList<Step> temp;
+        int n = 0; // TODO: Delete, this is only here for testing purposes
+
         GasMix bottomGas = gasList.get(0);
         ArrayList<DecoStops> decoStages = decompressionStops(start, stages);
         Step step = start;
@@ -628,12 +630,15 @@ public class Run{
             Step end = decompressionStop(step, d.getAscentTime(), d.getGas(), d.getNextGf());
             decompressionStopTable.add(new DecoStop(pressureToDepth(step.getAbsolutePressure()),
                     end.getTime() - step.getTime()));
-
+            //TODO: Delete this is only to test
+            System.out.println("DecoStop(depth = " + decompressionStopTable.get(n).getDepth()+ ", time = " +
+                    decompressionStopTable.get(n).getMin() + ")");
             step = end;
             steps.add(step);
             // Ascend to next deco stop
             step = nextStepAscent(step, d.getAscentTime(), d.getGas(), d.getNextGf());
             steps.add(step);
+            n += 1;
         }
         return steps;
     }
@@ -844,7 +849,7 @@ public class Run{
         double newTime = nextTime;
         Pair<Double, CompartmentData> result = nextF(time, data, maxTime, step, gas);
         Pair<Object, Object> args = null;
-        while (invF(newTime, result.getValue(), step, gf)) { // always true?
+        while (invF(newTime, result.getValue(), step, result.getValue().getGf())) { //FIXME: once true it's always true????????????????????????
             args =  new Pair(result.getKey(), result.getValue());
             result = nextF(time, data, maxTime, step, gas);
             newTime = result.getKey();
@@ -856,7 +861,8 @@ public class Run{
         }
     }
 
-    public Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step, GasMix gas){
+    public Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step,
+                                               GasMix gas){
         return new Pair(time + maxTime, tissuePressureDive(step.getAbsolutePressure(), maxTime, gas, data));
     }
 
@@ -873,13 +879,15 @@ public class Run{
         }
     }
 
-    public int bisectFind(int n, Step step, double gf, GasMix gas, CompartmentData data, double nextTime) throws GradientFactorException {
+    public int bisectFind(int n, Step step, double gf, GasMix gas, CompartmentData data, double nextTime)
+            throws GradientFactorException {
         int lo = 1;
         int hi = n + 1;
         int k;
         while (lo < hi){
             k = (int) Math.floor((lo + hi) / 2.0);
-            if (!canAscend(step.getAbsolutePressure(), nextTime, tissuePressureDive(step.getAbsolutePressure(), k, gas, data), gf)){
+            if (!canAscend(step.getAbsolutePressure(), nextTime,
+                    tissuePressureDive(step.getAbsolutePressure(), k, gas, data), gf)){
                 lo = k + 1;
             } else{
                 hi = k;
@@ -908,7 +916,8 @@ public class Run{
      * @param data
      * @return
      */
-    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data) throws GradientFactorException {
+    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data)
+            throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
         return pressure >= model.ceiling(data);
     }
@@ -921,7 +930,8 @@ public class Run{
      * @param gf
      * @return
      */
-    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf) throws GradientFactorException {
+    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf)
+            throws GradientFactorException {
         double pressure = absolutePressure - timeToPressure(time, ascentRate);
         data.setGf(gf);
         return pressure >= model.ceiling(data);
