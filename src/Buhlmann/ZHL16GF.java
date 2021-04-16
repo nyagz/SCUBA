@@ -62,9 +62,9 @@ public class ZHL16GF extends ZHL16BGF{
      * @return
      */
     public double ceiling(CompartmentData data) throws GradientFactorException {
-        double[] compartments = tissueCeiling(data);
-        double ceiling = compartments[0];
-        for(double p: compartments){
+        double[] tempCeilings = tissueCeiling(data);
+        double ceiling = tempCeilings[0];
+        for(double p: tempCeilings){
             ceiling = Math.max(ceiling, p);
         }
         return ceiling;
@@ -144,6 +144,9 @@ public class ZHL16GF extends ZHL16BGF{
      * @return
      */
     public double[] tissueCeiling(CompartmentData data) throws GradientFactorException {
+        if (data.getGf() < 0 || data.getGf() > 1.5){
+            throw new GradientFactorException("Gradient factor out of range");
+        }
         TissueLoader[] tissues = data.getTissues();
         double[] ceilings = new double[16];
         for (int i = 0; i < tissues.length; i++){

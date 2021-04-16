@@ -1,7 +1,7 @@
 package Buhlmann;
 
 public class DecoStops {
-    private double depth;
+    private double depth; // pressuree?
     private GasMix gas;
     private double ascentTime;
     private double nextGf;
