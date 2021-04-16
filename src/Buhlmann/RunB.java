@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RunB {
-    public ZHL16GF model;
+    public ZHL16BGF model;
     public int ascentRate;
     public int descentRate;
     public double meterToBar;
@@ -21,7 +21,7 @@ public class RunB {
     public ArrayList<Step> steps = new ArrayList<>();
 
     public RunB(){
-        this.model = new ZHL16GF();
+        this.model = new ZHL16BGF();
         this.ascentRate = 10;
         this.descentRate = 20;
         this.meterToBar = 0.09985;

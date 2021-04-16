@@ -1,40 +1,175 @@
 package Buhlmann;
 
-public class ZHL16BGF{
-    /**
-     * ZH-L16B-GF decompression model
-     * source: gfdeco.f by Baker
-     */
-    public final double[] N2_A = new double[]{
-            1.1696, 1.0000, 0.8618, 0.7562, 0.6667, 0.5600, 0.4947, 0.4500,
-            0.4187, 0.3798, 0.3497, 0.3223, 0.2850, 0.2737, 0.2523, 0.2327
-    };
+public class ZHL16BGF extends ZHL16B {
+    public static int compartments = 16;
+    public double startP_N2;
+    public double startP_He;
+    public double[] n2_k;
+    public double[] he_k;
 
-    public final double[] N2_B = new double[]{
-            0.5578, 0.6514, 0.7222, 0.7825, 0.8126, 0.8434, 0.8693, 0.8910,
-            0.9092, 0.9222, 0.9319, 0.9403, 0.9477, 0.9544, 0.9602, 0.9653
-    };
+    public double gfLow;
+    public double gfHigh;
+    public double waterVapourPressure;
 
-    public final double[] He_A = new double[]{
-            1.6189, 1.3830, 1.1919, 1.0458, 0.9220, 0.8205, 0.7305, 0.6502,
-            0.5950, 0.5545, 0.5333, 0.5189, 0.5181, 0.5176, 0.5172, 0.5119
-    };
-
-    public final double[] He_B = new double[]{
-            0.4770, 0.5747, 0.6527, 0.7223, 0.7582, 0.7957, 0.8279, 0.8553,
-            0.8757, 0.8903, 0.8997, 0.9073, 0.9122, 0.9171, 0.9217, 0.9267
-    };
-
-    public final double[] N2_halfLife = new double[]{
-            5.0, 8.0, 12.5, 18.5, 27.0, 38.3, 54.3, 77.0, 109.0,
-            146.0, 187.0, 239.0, 305.0, 390.0, 498.0, 635.0
-    };
-
-    public final double[] He_halfLife = new double[]{
-            1.88, 3.02, 4.72, 6.99, 10.21, 14.48, 20.53, 29.11,
-            41.20, 55.19, 70.69, 90.34, 115.29, 147.42, 188.24, 240.03
-    };
 
     public ZHL16BGF() {
+        super();
+        this.n2_k = kConst(N2_halfLife);
+        this.he_k = kConst(He_halfLife);
+        this.startP_He = 0;
+        this.startP_N2 = 0.7902;
+        this.gfLow = 0.3;
+        this.gfHigh = 0.85;
+        this.waterVapourPressure = 0.0627;
+
+    }
+
+    /**
+     * Initialises the pressure of inert gasses in all tissue compartments
+     * @param surfacePressure
+     * @return
+     */
+    public CompartmentData initialisePressure(double surfacePressure){
+        double pN2 = startP_N2 * (surfacePressure - waterVapourPressure);
+        double pHe = startP_He;
+        TissueLoader[] tissues = new TissueLoader[16];
+        for (int i = 0; i < tissues.length; i++){
+            tissues[i] = new TissueLoader(pN2, pHe);
+        }
+        return new CompartmentData(tissues, gfLow);
+    }
+
+    /**
+     *Calculate gas loading for all tissue compartments
+     * @param absolutePressure
+     * @param time
+     * @param gas
+     * @param pressureRate
+     * @param initialPressureData
+     * @return
+     */
+    public CompartmentData loadTissues(double absolutePressure, double time, GasMix gas, double pressureRate,
+                                              CompartmentData initialPressureData){
+        TissueLoader[] loaders = tissueLoaders(absolutePressure, gas, pressureRate, time,
+                initialPressureData.getTissues());
+
+        return new CompartmentData(loaders, initialPressureData.getGf());
+    }
+
+    /**
+     * Calculates the pressure of ascent ceiling limit
+     * @param data
+     * @return
+     */
+    public double ceiling(CompartmentData data) throws GradientFactorException {
+        double[] tempCeilings = tissueCeiling(data);
+        double ceiling = tempCeilings[0];
+        for(double p: tempCeilings){
+            ceiling = Math.max(ceiling, p);
+        }
+        return ceiling;
+    }
+
+    public double ceiling(CompartmentData data, double gf) throws GradientFactorException {
+        double[] compartments = tissueCeiling(data, gf);
+        double ceiling = compartments[0];
+        for(double p: compartments){
+            ceiling = Math.max(ceiling, p);
+        }
+        return ceiling;
+    }
+
+    /**
+     * Calculate the gas decay constant for each tissue compartment
+     * @param halfLife
+     * @return
+     */
+    public double[] kConst(double[] halfLife){
+        double[] k = new double[16];
+        for (int i = 0; i < halfLife.length; i++){
+            k[i] = Math.log(2) / halfLife[i];
+        }
+        return k;
+    }
+
+    /**
+     * Exponential function for time and gas decay
+     * @param time
+     * @param k
+     * @return
+     */
+    public double exp(double time, double k){
+        return Math.exp(-k * time);
+    }
+
+
+    public TissueLoader[] tissueLoaders(double absolutePressure, GasMix gas, double pressureRateChange,
+                                               double time, TissueLoader[] initialPressure){
+        double[] n2Loader, heLoader;
+
+        TissueLoader[] result = new TissueLoader[16];
+        for (int i = 0; i < result.length; i++){
+            n2Loader = tissueLoader(absolutePressure, (double) gas.getN2() / 100, pressureRateChange, n2_k[i],
+                    time, initialPressure[i].getN2Loader());
+            heLoader = tissueLoader(absolutePressure, (double) gas.getHe() / 100, pressureRateChange, he_k[i],
+                    time, initialPressure[i].getHeLoader());
+            result[i] = new TissueLoader(n2Loader[i], heLoader[i]);
+        }
+        return result;
+    }
+
+    /**
+     * Loads the tissue compartment with inert gas
+     * @param absolutePressure
+     * @param f_gas
+     * @param pressureRateChange
+     * @param k_const
+     * @return
+     */
+    public double[] tissueLoader(double absolutePressure, double f_gas, double pressureRateChange,
+                                      double k_const, double time, double initialPressure){
+        double p_alv, r;
+        p_alv = f_gas * (absolutePressure - waterVapourPressure);
+        r = f_gas * pressureRateChange;
+        double[] schreinerResult = new double[16];
+        for (int i = 0; i < schreinerResult.length; i++){
+            schreinerResult[i] = Equations.schreiner(initialPressure, p_alv, time, k_const, r);
+        }
+        return schreinerResult;
+    }
+
+    /**
+     * Calculates the pressure of ascent for each tissue compartment
+     * @param data
+     * @return
+     */
+    public double[] tissueCeiling(CompartmentData data) throws GradientFactorException {
+        if (data.getGf() < 0 || data.getGf() > 1.5){
+            throw new GradientFactorException("Gradient factor out of range");
+        }
+        TissueLoader[] tissues = data.getTissues();
+        double[] ceilings = new double[16];
+        for (int i = 0; i < tissues.length; i++){
+            ceilings[i] = Equations.buhlmannEquation(tissues[i].getN2Loader(), tissues[i].getHeLoader(),
+                    N2_A[i], N2_B[i], He_A[i], He_B[i], data.getGf());
+        }
+        return ceilings;
+    }
+
+    public double[] tissueCeiling(CompartmentData data, Double gf) throws GradientFactorException{
+        if (gf == null){
+            gf = gfLow;
+        }
+        if(gf < 0 || gf > 1.5){
+            throw new GradientFactorException("Gradient factor out of range");
+        }
+
+        TissueLoader[] tissues = data.getTissues();
+        double[] ceilings = new double[16];
+        for (int i = 0; i < tissues.length; i++){
+            ceilings[i] = Equations.buhlmannEquation(tissues[i].getN2Loader(), tissues[i].getHeLoader(),
+                    N2_A[i], N2_B[i], He_A[i], He_B[i], gf);
+        }
+        return ceilings;
     }
 }
