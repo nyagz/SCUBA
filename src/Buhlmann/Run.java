@@ -613,7 +613,6 @@ public class Run{
             throws GradientFactorException, PressureException {
         ArrayList<Step> steps = new ArrayList<>();
         ArrayList<Step> temp;
-        int n = 0; // TODO: Delete, this is only here for testing purposes
 
         GasMix bottomGas = gasList.get(0);
         ArrayList<DecoStops> decoStages = decompressionStops(start, stages);
@@ -630,15 +629,11 @@ public class Run{
             Step end = decompressionStop(step, d.getAscentTime(), d.getGas(), d.getNextGf());
             decompressionStopTable.add(new DecoStop(pressureToDepth(step.getAbsolutePressure()),
                     end.getTime() - step.getTime()));
-            //TODO: Delete this is only to test
-            System.out.println("DecoStop(depth = " + decompressionStopTable.get(n).getDepth()+ ", time = " +
-                    decompressionStopTable.get(n).getMin() + ")");
             step = end;
             steps.add(step);
             // Ascend to next deco stop
             step = nextStepAscent(step, d.getAscentTime(), d.getGas(), d.getNextGf());
             steps.add(step);
-            n += 1;
         }
         return steps;
     }
@@ -675,15 +670,6 @@ public class Run{
         return decoStops;
     }
 
-    // FIXME: AHHHHHHHHHHHHHHHHHHHHHHH
-    /**
-     * Calculates a decompression stop
-     * @param step - current decompression step
-     * @param nextTime - time to ascend to next decompression stop [min]
-     * @param gas - GasMix
-     * @param gf - gradient factor of next decompression stop
-     * @return a decompression stop
-     */
     public Step decompressionStop(Step step, double nextTime, GasMix gas, double gf)
             throws GradientFactorException {
         CompartmentData data = tissuePressureDive(step.getAbsolutePressure(), 1, gas, step.getData());
@@ -764,10 +750,47 @@ public class Run{
 
     /**
      * Calculates all dive steps
-     * @param maxDepth
-     * @param bottomTime
-     * @return
+     * @param maxDepth - planned deepest point of dive
+     * @param bottomTime - time spent at the max time
+     * @param descent - calculating descent part of dive
+     * @return Calculates the dive steps and decompression steps for the dive being planned
      */
+    public ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent) throws PressureException,
+            GradientFactorException, GasConfigException, EngineError {
+        Step step = null;
+        ArrayList<Step> tempSteps;
+        decompressionStopTable.clear();
+        validateGasList(maxDepth);
+        GasMix bottomGas = gasList.get(0);
+        gasList = sortList(travelGasList);
+        gasList.add(bottomGas);
+        double absolutePressure = depthToPressure(maxDepth);
+        if(descent){
+            tempSteps = diveDescent(absolutePressure, gasList);
+            step = tempSteps.get(tempSteps.size() - 1);
+            for (Step s:tempSteps){
+                steps.add(s);
+            }
+        } else{
+            step = stepStart(absolutePressure, bottomGas);
+            steps.add(step);
+        }
+        ArrayList<GasMix> listToSort = gasList;
+        listToSort.remove(0);
+        gasList = sortList(listToSort);
+        gasList.add(0, bottomGas);
+
+        double t = bottomTime - step.getTime();
+        if (t <= 0){
+            throw new EngineError("Bottom time shorter than descent time");
+        }
+        step = stepNext(step, t, bottomGas);
+        steps.add(step);
+
+        ArrayList<Step> ascentSteps = diveAscent(step, gasList);
+        steps.addAll(ascentSteps);
+        return steps;
+    }
     public ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
             GradientFactorException, GasConfigException, EngineError {
         Step step = null;
@@ -793,56 +816,10 @@ public class Run{
         steps.add(step);
 
         ArrayList<Step> ascentSteps = diveAscent(step, gasList);
-        // FIXME: Should this for loop be deleted?
-        // for (Step s: ascentSteps){
-        //     steps.add(s);
-        // }
         steps.addAll(ascentSteps);
         return steps;
     }
 
-    // TODO: Check if needs to be updated based on plan above
-    public ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent) throws PressureException,
-            GradientFactorException, GasConfigException, EngineError {
-        Step step = null;
-
-        decompressionStopTable.clear();
-        validateGasList(maxDepth);
-        GasMix bottomGas = gasList.get(0);
-        gasList = sortList(travelGasList);
-        gasList.add(bottomGas);
-
-        double absolutePressure = depthToPressure(maxDepth);
-        if(descent){
-            for (Step s:diveDescent(absolutePressure, gasList)){
-                steps.add(s);
-            }
-        } else{
-            step = stepStart(absolutePressure, bottomGas);
-            steps.add(step);
-        }
-
-        ArrayList<GasMix> listToSort = gasList;
-        listToSort.remove(0);
-        gasList = sortList(listToSort);
-        gasList.add(0, bottomGas);
-
-        double t = bottomTime - step.getTime();
-        if (t <= 0){
-            throw new EngineError("Bottom time shorter than descent time");
-        }
-        step = stepNext(step, t, bottomGas);
-        steps.add(step);
-
-        ArrayList<Step> ascentSteps = diveAscent(step, gasList);
-        for (Step s: ascentSteps){
-            steps.add(s);
-        }
-        steps.addAll(diveAscent(step, gasList));
-        return steps;
-    }
-
-    //FIXME: AHHHHHHHHHHHH
     public Pair<Double, CompartmentData> recurseWhile(double time, CompartmentData data, double maxTime, Step step,
                                                       double gf, GasMix gas, double nextTime)
             throws GradientFactorException {
@@ -854,11 +831,7 @@ public class Run{
             result = nextF(args.getKey(), args.getValue(), maxTime, step, gas);
             newTime = result.getKey();
         }
-        // while (invF(newTime, result.getValue(), step, result.getValue().getGf())) { //FIXME: once true it's always true????????????????????????
-        //     args =  result;
-        //     result = nextF(args.getKey(), args.getValue(), maxTime, step, gas);
-        //     newTime = result.getKey();
-        // }
+
         if (args == null) {
             return new Pair(time, data);
         } else {
@@ -911,37 +884,6 @@ public class Run{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /** Ascent **/
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /** Need to sort these out **/
-
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Checks if it's possible to ascend without violating the ceiling limit
-     * @param absolutePressure
-     * @param time
-     * @param data
-     * @return
-     */
-    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data)
-            throws GradientFactorException {
-        double pressure = absolutePressure - timeToPressure(time, ascentRate);
-        return pressure >= model.ceiling(data);
-    }
-
-    /**
-     * Checks if it's possible to ascend without violating the ceiling limit (with specified gradient factor)
-     * @param absolutePressure
-     * @param time
-     * @param data
-     * @param gf
-     * @return
-     */
-    public boolean possibleAscent(double absolutePressure, double time, CompartmentData data, double gf)
-            throws GradientFactorException {
-        double pressure = absolutePressure - timeToPressure(time, ascentRate);
-        data.setGf(gf);
-        return pressure >= model.ceiling(data);
-    }
-
 
     public static void main(String args[]) throws GradientFactorException, PressureException, GasConfigException {
         // Tests.testingDiveProfile();
