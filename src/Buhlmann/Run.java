@@ -848,12 +848,17 @@ public class Run{
             throws GradientFactorException {
         double newTime = nextTime;
         Pair<Double, CompartmentData> result = nextF(time, data, maxTime, step, gas);
-        Pair<Object, Object> args = null;
-        while (invF(newTime, result.getValue(), step, result.getValue().getGf())) { //FIXME: once true it's always true????????????????????????
-            args =  new Pair(result.getKey(), result.getValue());
-            result = nextF(time, data, maxTime, step, gas);
+        Pair<Double, CompartmentData> args = new Pair(time, data);
+        while(!canAscend(step.getAbsolutePressure(), nextTime, result.getValue(), result.getValue().getGf())){
+            args = result;
+            result = nextF(args.getKey(), args.getValue(), maxTime, step, gas);
             newTime = result.getKey();
         }
+        // while (invF(newTime, result.getValue(), step, result.getValue().getGf())) { //FIXME: once true it's always true????????????????????????
+        //     args =  result;
+        //     result = nextF(args.getKey(), args.getValue(), maxTime, step, gas);
+        //     newTime = result.getKey();
+        // }
         if (args == null) {
             return new Pair(time, data);
         } else {
