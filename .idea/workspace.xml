@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/VPM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/VPM.java" afterDir="false" />
-    </list>
+    <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
