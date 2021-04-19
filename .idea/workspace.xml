@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="" />
+    <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/RunVPM.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Tests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/RunB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/RunB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/VPM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/VPM.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -160,10 +167,10 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="415" y="191" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1611002305889">
+    <state x="415" y="191" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1618852973225">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
-    <state x="415" y="191" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1611002305889" />
+    <state x="415" y="191" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852973225" />
     <state x="490" y="145" key="#com.intellij.ide.util.MemberChooser" timestamp="1618222852837">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
@@ -186,29 +193,29 @@
     </state>
     <state x="131" y="-849" key="FileChooserDialogImpl/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1615574789794" />
     <state x="807" y="194" key="FileChooserDialogImpl/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1612590564539" />
-    <state width="1326" height="333" key="GridCell.Tab.0.bottom" timestamp="1618580189240">
+    <state width="1325" height="188" key="GridCell.Tab.0.bottom" timestamp="1618852679025">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325115" />
-    <state width="1326" height="333" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618580189240" />
+    <state width="1325" height="188" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679025" />
     <state width="641" height="283" key="GridCell.Tab.0.bottom/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
-    <state width="1326" height="333" key="GridCell.Tab.0.center" timestamp="1618580189240">
+    <state width="1325" height="188" key="GridCell.Tab.0.center" timestamp="1618852679025">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325114" />
-    <state width="1326" height="333" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618580189240" />
+    <state width="1325" height="188" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679025" />
     <state width="641" height="283" key="GridCell.Tab.0.center/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
-    <state width="1326" height="333" key="GridCell.Tab.0.left" timestamp="1618580189239">
+    <state width="1325" height="188" key="GridCell.Tab.0.left" timestamp="1618852679024">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325114" />
-    <state width="1326" height="333" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618580189239" />
+    <state width="1325" height="188" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679024" />
     <state width="641" height="283" key="GridCell.Tab.0.left/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
-    <state width="1326" height="333" key="GridCell.Tab.0.right" timestamp="1618580189240">
+    <state width="1325" height="188" key="GridCell.Tab.0.right" timestamp="1618852679025">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325115" />
-    <state width="1326" height="333" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618580189240" />
+    <state width="1325" height="188" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679025" />
     <state width="641" height="283" key="GridCell.Tab.0.right/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
     <state width="1326" height="333" key="GridCell.Tab.1.bottom" timestamp="1618580189241">
       <screen x="0" y="0" width="1368" height="872" />

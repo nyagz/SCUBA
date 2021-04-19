@@ -16,7 +16,7 @@ public class RunB {
     public double p3m;
 
     public ArrayList<GasMix> gasList;
-    public ArrayList<GasMix> travelGasList = new ArrayList<>();
+    public ArrayList<GasMix> travelGasList;
     public ArrayList<DecoStop> decompressionStopTable = new ArrayList<>();
     public ArrayList<Step> steps = new ArrayList<>();
 

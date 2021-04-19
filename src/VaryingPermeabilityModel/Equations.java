@@ -1,6 +1,15 @@
 package VaryingPermeabilityModel;
 
 public class Equations {
+    /**
+     * Calculates the allowed supersaturation value fot the most conservative allowance of bubbles in the body
+     * @param surfaceTension - surface tension 0.179 N/m
+     * @param crumblingCompression - crumbling compression, 2.57 N/m
+     * @param minimumInitialRadius - minimum initial radius r_0Min, 0.8μm
+     * @param compositeParameter - composite parameter related to the critical volume, 250 [bar/min]
+     * @param pCrush - constant throughout
+     * @return pssMin
+     */
     public static double allowedSupersaturationValue(double surfaceTension, double crumblingCompression,
                                                      double minimumInitialRadius, double compositeParameter,
                                                      double pCrush){
