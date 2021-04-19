@@ -1,5 +1,6 @@
 package VaryingPermeabilityModel;
 
+// TODO: Add function descriptions
 public class Equations {
     /**
      * Calculates the allowed supersaturation value fot the most conservative allowance of bubbles in the body
@@ -18,14 +19,37 @@ public class Equations {
                 (pCrush * (surfaceTension / crumblingCompression));
     }
 
+    /**
+     *
+     * @param pMaxDepth
+     * @param pSurface
+     * @return
+     */
     public static double pCrush(double pMaxDepth, double pSurface){
         return pMaxDepth - pSurface;
     }
 
+    /**
+     *
+     * @param pT
+     * @param pssMin
+     * @return
+     */
     public static double initialDiveProfile(double pT, double pssMin){
         return pT + pssMin;
     }
 
+    /**
+     *
+     * @param decompressionTime
+     * @param halfTime
+     * @param surfaceTension
+     * @param crumblingCompression
+     * @param lambda
+     * @param pssMin
+     * @param pCrush
+     * @return
+     */
     public static double newSupersaturationGradient(double decompressionTime, double halfTime, double surfaceTension,
                                                     double crumblingCompression, double lambda, double pssMin,
                                                     double pCrush){

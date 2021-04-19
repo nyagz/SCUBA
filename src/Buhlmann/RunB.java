@@ -18,7 +18,7 @@ public class RunB {
     public ArrayList<GasMix> gasList;
     public ArrayList<GasMix> travelGasList;
     public ArrayList<DecoStop> decompressionStopTable = new ArrayList<>();
-    public ArrayList<Step> steps = new ArrayList<>();
+    public ArrayList<Step> diveSteps = new ArrayList<>();
 
     public RunB(){
         this.model = new ZHL16BGF();
@@ -273,18 +273,18 @@ public class RunB {
         boolean descent = true;
         GasMix gas = gasList.get(0);
         Step step = stepStart(surfacePressure, gas);
-        steps.add(step);
+        diveSteps.add(step);
         ArrayList<Stage> stages = descentStages(absolutePressure, gasList);
 
         for (int i = 0; i < stages.size(); i++){
             if (i > 0){
                 step = gasSwitch(step, stages.get(i).getGas());
-                steps.add(step);
+                diveSteps.add(step);
             }
             double time = pressureToTime(stages.get(i).getAbsolutePressure() - step.getAbsolutePressure(),
                     descentRate);
             step = nextStepDescent(step, time, gas);
-            steps.add(step);
+            diveSteps.add(step);
         }
 
         GasMix last = gasList.get(gasList.size() - 1);
@@ -293,9 +293,9 @@ public class RunB {
                 throw new GasConfigException("Bottom gas in travel gas mix");
             }
             step = gasSwitch(step, last);
-            steps.add(step);
+            diveSteps.add(step);
         }
-        return steps;
+        return diveSteps;
     }
 
     /**
@@ -769,11 +769,11 @@ public class RunB {
             tempSteps = diveDescent(absolutePressure, gasList);
             step = tempSteps.get(tempSteps.size() - 1);
             for (Step s:tempSteps){
-                steps.add(s);
+                diveSteps.add(s);
             }
         } else{
             step = stepStart(absolutePressure, bottomGas);
-            steps.add(step);
+            diveSteps.add(step);
         }
         ArrayList<GasMix> listToSort = gasList;
         listToSort.remove(0);
@@ -785,11 +785,11 @@ public class RunB {
             throw new EngineError("Bottom time shorter than descent time");
         }
         step = stepNext(step, t, bottomGas);
-        steps.add(step);
+        diveSteps.add(step);
 
         ArrayList<Step> ascentSteps = diveAscent(step, gasList);
-        steps.addAll(ascentSteps);
-        return steps;
+        diveSteps.addAll(ascentSteps);
+        return diveSteps;
     }
     public ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
             GradientFactorException, GasConfigException, EngineError {
@@ -813,11 +813,11 @@ public class RunB {
             throw new EngineError("Bottom time shorter than descent time");
         }
         step = stepNext(step, t, bottomGas);
-        steps.add(step);
+        diveSteps.add(step);
 
         ArrayList<Step> ascentSteps = diveAscent(step, gasList);
-        steps.addAll(ascentSteps);
-        return steps;
+        diveSteps.addAll(ascentSteps);
+        return diveSteps;
     }
 
     public Pair<Double, CompartmentData> recurseWhile(double time, CompartmentData data, double maxTime, Step step,
