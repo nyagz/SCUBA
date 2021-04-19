@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 // TODO: descent and dive to be done the same way as Buhlmann's but ascent should use VPM instead of ZHL16
 public class VPM extends ZHL16B {
+    public int compartments;
     public double startP_N2;
     public double startP_He;
     public double[] n2_k;
@@ -19,6 +20,7 @@ public class VPM extends ZHL16B {
 
     public VPM() {
         super();
+        this.compartments = 16;
         this.n2_k = kConst(N2_halfLife);
         this.he_k = kConst(He_halfLife);
         this.startP_He = 0;
@@ -34,7 +36,7 @@ public class VPM extends ZHL16B {
      * @return
      */
     public double[] kConst(double[] halfLife){
-        double[] k = new double[16];
+        double[] k = new double[compartments];
         for (int i = 0; i < halfLife.length; i++){
             k[i] = Math.log(2) / halfLife[i];
         }
@@ -49,7 +51,7 @@ public class VPM extends ZHL16B {
     public CompartmentData initialisePressure(double surfacePressure){
         double pN2 = startP_N2 * (surfacePressure - waterVapourPressure);
         double pHe = startP_He;
-        TissueLoader[] tissues = new TissueLoader[16];
+        TissueLoader[] tissues = new TissueLoader[compartments];
         for (int i = 0; i < tissues.length; i++){
             tissues[i] = new TissueLoader(pN2, pHe);
         }
@@ -77,7 +79,7 @@ public class VPM extends ZHL16B {
                                         double time, TissueLoader[] initialPressure){
         double[] n2Loader, heLoader;
 
-        TissueLoader[] result = new TissueLoader[16];
+        TissueLoader[] result = new TissueLoader[compartments];
         for (int i = 0; i < result.length; i++){
             n2Loader = tissueLoader(absolutePressure, (double) gas.getN2() / 100, pressureRateChange, n2_k[i],
                     time, initialPressure[i].getN2Loader());
@@ -101,7 +103,7 @@ public class VPM extends ZHL16B {
         double p_alv, r;
         p_alv = f_gas * (absolutePressure - waterVapourPressure);
         r = f_gas * pressureRateChange;
-        double[] schreinerResult = new double[16];
+        double[] schreinerResult = new double[compartments];
         for (int i = 0; i < schreinerResult.length; i++){
             schreinerResult[i] = Equations.schreiner(initialPressure, p_alv, time, k_const, r);
         }
