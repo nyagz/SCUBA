@@ -118,7 +118,8 @@ public class Tests {
         }
     }
 
-    public static void main(String args[]) throws PressureException, GasConfigException, EngineError, GradientFactorException {
+    public static void main(String args[]) throws PressureException, GasConfigException, EngineError,
+            GradientFactorException {
         // testingPlanning();
         // ZHL16BGF model = new ZHL16BGF();
         // testingInstanceObj();

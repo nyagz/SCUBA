@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/RunB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/RunB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/RunVPM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/RunVPM.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Tests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Tests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/VPM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/VPM.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,13 +47,13 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Application.Tests">
-    <configuration name="Ascent" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="BuhlmannEquation.Ascent" />
+  <component name="RunManager" selected="Application.Tests (1)">
+    <configuration name="RunB" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Buhlmann.RunB" />
       <module name="SCUBA" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="BuhlmannEquation.*" />
+          <option name="PATTERN" value="Buhlmann.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -60,12 +61,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RunB" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Buhlmann.RunB" />
+    <configuration name="Tests (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="VaryingPermeabilityModel.Tests" />
       <module name="SCUBA" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="Buhlmann.*" />
+          <option name="PATTERN" value="VaryingPermeabilityModel.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -114,11 +115,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Tests (1)" />
         <item itemvalue="Application.Tests" />
         <item itemvalue="Application.RunB" />
         <item itemvalue="Application.VPM" />
         <item itemvalue="Application.ZHL16" />
-        <item itemvalue="Application.Ascent" />
       </list>
     </recent_temporary>
   </component>
@@ -190,29 +191,29 @@
     </state>
     <state x="131" y="-849" key="FileChooserDialogImpl/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1615574789794" />
     <state x="807" y="194" key="FileChooserDialogImpl/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1612590564539" />
-    <state width="1325" height="188" key="GridCell.Tab.0.bottom" timestamp="1618852679025">
+    <state width="1326" height="187" key="GridCell.Tab.0.bottom" timestamp="1618860008602">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325115" />
-    <state width="1325" height="188" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679025" />
+    <state width="1326" height="187" key="GridCell.Tab.0.bottom/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618860008602" />
     <state width="641" height="283" key="GridCell.Tab.0.bottom/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
-    <state width="1325" height="188" key="GridCell.Tab.0.center" timestamp="1618852679025">
+    <state width="1326" height="187" key="GridCell.Tab.0.center" timestamp="1618860008601">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325114" />
-    <state width="1325" height="188" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679025" />
+    <state width="1326" height="187" key="GridCell.Tab.0.center/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618860008601" />
     <state width="641" height="283" key="GridCell.Tab.0.center/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
-    <state width="1325" height="188" key="GridCell.Tab.0.left" timestamp="1618852679024">
+    <state width="1326" height="187" key="GridCell.Tab.0.left" timestamp="1618860008601">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325114" />
-    <state width="1325" height="188" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679024" />
+    <state width="1326" height="187" key="GridCell.Tab.0.left/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618860008601" />
     <state width="641" height="283" key="GridCell.Tab.0.left/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
-    <state width="1325" height="188" key="GridCell.Tab.0.right" timestamp="1618852679025">
+    <state width="1326" height="187" key="GridCell.Tab.0.right" timestamp="1618860008602">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state width="912" height="333" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1618578325115" />
-    <state width="1325" height="188" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618852679025" />
+    <state width="1326" height="187" key="GridCell.Tab.0.right/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618860008602" />
     <state width="641" height="283" key="GridCell.Tab.0.right/0.0.1368.872@0.0.1368.872" timestamp="1613574333945" />
     <state width="1326" height="333" key="GridCell.Tab.1.bottom" timestamp="1618580189241">
       <screen x="0" y="0" width="1368" height="872" />
@@ -281,21 +282,10 @@
       <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="9" y="211" key="run.anything.popup/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618210716106" />
-    <state x="-509" y="-857" width="944" height="809" key="search.everywhere.popup" timestamp="1617494958895">
-      <screen x="-1002" y="-1080" width="1920" height="1040" />
+    <state x="352" y="188" width="672" height="678" key="search.everywhere.popup" timestamp="1618859834760">
+      <screen x="0" y="0" width="1368" height="872" />
     </state>
     <state x="-509" y="-857" width="944" height="809" key="search.everywhere.popup/0.0.1368.872/-1002.-1080.1920.1040@-1002.-1080.1920.1040" timestamp="1617494958895" />
-    <state x="351" y="187" width="672" height="678" key="search.everywhere.popup/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1612616389071" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Buhlmann/Tests.java</url>
-          <line>107</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <state x="352" y="188" width="672" height="678" key="search.everywhere.popup/0.0.1368.872/-1002.-1080.1920.1040@0.0.1368.872" timestamp="1618859834760" />
   </component>
 </project>
