@@ -5,8 +5,8 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Run{
-    public ZHL16GF model;
+public class RunB {
+    public ZHL16BGF model;
     public int ascentRate;
     public int descentRate;
     public double meterToBar;
@@ -20,8 +20,8 @@ public class Run{
     public ArrayList<DecoStop> decompressionStopTable = new ArrayList<>();
     public ArrayList<Step> steps = new ArrayList<>();
 
-    public Run(){
-        this.model = new ZHL16GF();
+    public RunB(){
+        this.model = new ZHL16BGF();
         this.ascentRate = 10;
         this.descentRate = 20;
         this.meterToBar = 0.09985;
@@ -842,19 +842,6 @@ public class Run{
     public Pair<Double, CompartmentData> nextF(double time, CompartmentData data, double maxTime, Step step,
                                                GasMix gas){
         return new Pair(time + maxTime, tissuePressureDive(step.getAbsolutePressure(), maxTime, gas, data));
-    }
-
-    public CompartmentData nextF(double k, Step step, GasMix gas, CompartmentData data){
-        return tissuePressureDive(step.getAbsolutePressure(), k, gas, data);
-    }
-
-
-    public boolean invF(double nextTime, CompartmentData data, Step step, double gf) throws GradientFactorException {
-        if (canAscend(step.getAbsolutePressure(), nextTime, data, gf) == true){
-            return false;
-        } else{
-            return true;
-        }
     }
 
     public int bisectFind(int n, Step step, double gf, GasMix gas, CompartmentData data, double nextTime)

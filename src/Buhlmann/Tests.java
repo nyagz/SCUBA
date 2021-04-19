@@ -1,7 +1,6 @@
 package Buhlmann;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 // TODO: Delete the class when finished with testing
 public class Tests {
@@ -87,8 +86,24 @@ public class Tests {
     //     }
     // }
 
-    public static void test() throws PressureException, GasConfigException, EngineError, GradientFactorException {
-        Run engine = new Run();
+    public static void testZHL16B() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+        RunB engine = new RunB();
+        engine.addGas(0, 21);
+        ArrayList<Step> profile = engine.plan(35, 40);
+        System.out.println("Dive steps:");
+        for (Step p: profile){
+            System.out.println("Step(phase = " + p.getPhase() + ", abs_p = " + p.getAbsolutePressure() + ", time = " +
+                    p.getTime() + ", gf = " + p.getData().getGf() + ")");
+        }
+        System.out.println();
+        System.out.println("Decompression stops:");
+        for (DecoStop d: engine.decompressionStopTable){
+            System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
+        }
+    }
+
+    public static void testZHL16C() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+        RunC engine = new RunC();
         engine.addGas(0, 21);
         ArrayList<Step> profile = engine.plan(35, 40);
         System.out.println("Dive steps:");
@@ -109,6 +124,7 @@ public class Tests {
         // testingInstanceObj();
         // testingEmptyArrayList();
         // testingSort();
-        test();
+        // testZHL16B();
+        testZHL16C();
     }
 }
