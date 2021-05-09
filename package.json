@@ -1,0 +1,23 @@
+{
+  "name": "scuba",
+  "version": "1.0.0",
+  "description": "Code for my final year dissertation project for decompression algorithms used in SCUBA diving",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nyagz/SCUBA.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nyagz/SCUBA/issues"
+  },
+  "homepage": "https://github.com/nyagz/SCUBA#readme",
+  "dependencies": {
+    "json-server": "^0.16.3"
+  }
+}
