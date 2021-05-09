@@ -3,15 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d7ecd69e-8048-4163-97e6-a338484b9f45" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/RunB.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/RunB.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/Buhlmann/Tests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/VaryingPermeabilityModel/Equations.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/VaryingPermeabilityModel/Equations.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SCUBA/VaryingPermeabilityModel/RunVPM.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SCUBA/VaryingPermeabilityModel/RunVPM.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/RunB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/RunB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/Tests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buhlmann/ZHL16BGF.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Buhlmann/ZHL16BGF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/Equations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VaryingPermeabilityModel/RunVPM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/VaryingPermeabilityModel/RunVPM.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.json" beforeDir="false" afterPath="$PROJECT_DIR$/db.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
