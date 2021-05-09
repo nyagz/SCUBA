@@ -12,6 +12,7 @@ public class RunVPM {
 
     public VPM model;
     public int descentRate;
+    public int ascentRate;
     public double meterToBar;
     public double surfacePressure;
     public boolean lastStop6m;
@@ -31,6 +32,7 @@ public class RunVPM {
 
         this.model = new VPM();
         this.descentRate = 20;
+        this.ascentRate = 10;
         this.meterToBar = 0.09985;
         this.surfacePressure = 1.01325;
         this.decoStopSearchTime = 8;
@@ -210,6 +212,23 @@ public class RunVPM {
         return diveSteps;
     }
 
+    public ArrayList<Step> diveAscent(Step startingStep, ArrayList<GasMix> gasList){
+        double pCrush = Equations.pCrush(startingStep.getAbsolutePressure(), surfacePressure);
+        double pminSS = allowedSupersaturationValue(pCrush);
+        return null;
+    }
+
+    public double allowedSupersaturationValue(double pCrush){
+        return Equations.pssMin(surfaceTension, crumblingCompression, minimumInitialRadius, crumblingCompression, pCrush);
+    }
+
+    // FIXME: Continue from here (Step 2)
+    public void findFirstDecoStop(double pMinSS, CompartmentData loadingData){
+
+        for(int i = 0; i < loadingData.getTissues().length; i++){
+
+        }
+    }
     /**
      * @param absolutePressure - absolute pressure of destination depth [bar]
      * @param gasList - list of all gases
@@ -387,6 +406,9 @@ public class RunVPM {
         step = stepNext(step, t, bottomGas);
         diveSteps.add(step);
 
+        // FIXME: Remove comments to get the ascending step
+        // ArrayList<Step> ascentSteps = diveAscent(step, gasList);
+        // diveSteps.addAll(ascentSteps);
         return diveSteps;
     }
 }

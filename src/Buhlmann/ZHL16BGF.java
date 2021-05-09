@@ -59,8 +59,8 @@ public class ZHL16BGF extends ZHL16B {
 
     /**
      * Calculates the pressure of ascent ceiling limit
-     * @param data
-     * @return
+     * @param data - tissue compartment data
+     * @return maximum absolute pressure within the tissue compartments
      */
     public double ceiling(CompartmentData data) throws GradientFactorException {
         double[] tempCeilings = tissueCeiling(data);

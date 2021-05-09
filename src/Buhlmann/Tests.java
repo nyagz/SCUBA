@@ -86,6 +86,37 @@ public class Tests {
     //     }
     // }
 
+    public static void testBoth() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+        RunB engine = new RunB();
+        engine.addGas(0, 21);
+        ArrayList<Step> profile = engine.plan(35, 40);
+        System.out.println("Dive steps:");
+        for (Step p: profile){
+            System.out.println("Step(phase = " + p.getPhase() + ", abs_p = " + p.getAbsolutePressure() + ", time = " +
+                    p.getTime() + ", gf = " + p.getData().getGf() + ")");
+        }
+        System.out.println();
+        System.out.println("Decompression stops:");
+        for (DecoStop d: engine.decompressionStopTable){
+            System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
+        }
+        System.out.println();
+        System.out.println("ZHL16C:");
+        RunC engine2 = new RunC();
+        engine2.addGas(0, 21);
+        ArrayList<Step> profile2 = engine2.plan(35, 40);
+        System.out.println("Dive steps:");
+        for (Step p: profile2){
+            System.out.println("Step(phase = " + p.getPhase() + ", abs_p = " + p.getAbsolutePressure() + ", time = " +
+                    p.getTime() + ", gf = " + p.getData().getGf() + ")");
+        }
+        System.out.println();
+        System.out.println("Decompression stops:");
+        for (DecoStop d: engine2.decompressionStopTable){
+            System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
+        }
+    }
+
     public static void testZHL16B() throws PressureException, GasConfigException, EngineError, GradientFactorException {
         RunB engine = new RunB();
         engine.addGas(0, 21);
@@ -100,6 +131,9 @@ public class Tests {
         for (DecoStop d: engine.decompressionStopTable){
             System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
         }
+        System.out.println();
+        System.out.println("ZHL16C:");
+
     }
 
     public static void testZHL16C() throws PressureException, GasConfigException, EngineError, GradientFactorException {
@@ -116,6 +150,9 @@ public class Tests {
         for (DecoStop d: engine.decompressionStopTable){
             System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
         }
+        System.out.println();
+
+
     }
 
     public static void main(String args[]) throws PressureException, GasConfigException, EngineError,
@@ -126,6 +163,7 @@ public class Tests {
         // testingEmptyArrayList();
         // testingSort();
         // testZHL16B();
-        testZHL16C();
+        // testZHL16C();
+        testBoth();
     }
 }

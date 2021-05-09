@@ -222,7 +222,7 @@ public class RunB {
      * @return tissue gas loading after a certain amount of time at a certain depth
      */
     public CompartmentData tissuePressureDive(double absolutePressure, double time, GasMix gas,
-                                                     CompartmentData data){
+                                              CompartmentData data){
         return model.loadTissues(absolutePressure, time, gas, 0, data);
     }
 
@@ -246,7 +246,7 @@ public class RunB {
      * @return tissues pressure after ascent
      */
     public CompartmentData tissuePressureAscent(double absolutePressure, double time, GasMix gas,
-                                                       CompartmentData data){
+                                                CompartmentData data){
         double rate = -ascentRate * meterToBar;
         return model.loadTissues(absolutePressure, time, gas, rate, data);
     }
@@ -867,9 +867,9 @@ public class RunB {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /** Descent **/
+    /** Descent **/
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /** Ascent **/
+    /** Ascent **/
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(String args[]) throws GradientFactorException, PressureException, GasConfigException {
