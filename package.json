@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/nyagz/SCUBA#readme",
   "dependencies": {
-    "json-server": "^0.16.3"
+    "json-server": "^0.16.3",
+    "lowdb": "^1.0.0"
   }
 }

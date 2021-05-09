@@ -2,40 +2,42 @@
   "dives": [
 
   ],
-  "savedGases": [
-    {
-      "id": 1,
-      "name": "EAN32",
-      "depth": 0,
-      "oxygen": 32,
-      "nitrogen": 68,
-      "helium": 0
-    },
-    {
-      "id": 2,
-      "name": "Air",
-      "depth": 0,
-      "oxygen": 21,
-      "nitrogen": 79,
-      "helium": 0
-    },
-    {
-      "id": 3,
-      "name": "EAN50",
-      "depth": 22,
-      "oxygen": 50,
-      "nitrogen": 50,
-      "helium": 0
-    },
-    {
-      "id": 4,
-      "name": "O2",
-      "depth": 6,
-      "oxygen": 100,
-      "nitrogen": 0,
-      "helium": 0
-    }
-  ],
+  "savedGases": {
+    "gases": [
+      {
+        "id": 1,
+        "name": "EAN32",
+        "depth": 0,
+        "oxygen": 32,
+        "nitrogen": 68,
+        "helium": 0
+      },
+      {
+        "id": 2,
+        "name": "Air",
+        "depth": 0,
+        "oxygen": 21,
+        "nitrogen": 79,
+        "helium": 0
+      },
+      {
+        "id": 3,
+        "name": "EAN50",
+        "depth": 22,
+        "oxygen": 50,
+        "nitrogen": 50,
+        "helium": 0
+      },
+      {
+        "id": 4,
+        "name": "O2",
+        "depth": 6,
+        "oxygen": 100,
+        "nitrogen": 0,
+        "helium": 0
+      }
+    ]
+  },
   "addedGases": [],
   "diveProfiles": []
 }
