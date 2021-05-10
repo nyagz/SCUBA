@@ -756,7 +756,7 @@ public class RunC {
      * @return Calculates the dive steps and decompression steps for the dive being planned
      */
     public ArrayList<Step> plan(double maxDepth, int bottomTime, boolean descent) throws PressureException,
-            GradientFactorException, GasConfigException, EngineError {
+            GradientFactorException, GasConfigException, EngineException {
         Step step = null;
         ArrayList<Step> tempSteps;
         decompressionStopTable.clear();
@@ -782,7 +782,7 @@ public class RunC {
 
         double t = bottomTime - step.getTime();
         if (t <= 0){
-            throw new EngineError("Bottom time shorter than descent time");
+            throw new EngineException("Bottom time shorter than descent time");
         }
         step = stepNext(step, t, bottomGas);
         steps.add(step);
@@ -792,7 +792,7 @@ public class RunC {
         return steps;
     }
     public ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
-            GradientFactorException, GasConfigException, EngineError {
+            GradientFactorException, GasConfigException, EngineException {
         Step step = null;
         ArrayList<Step> tempSteps;
         decompressionStopTable.clear();
@@ -810,7 +810,7 @@ public class RunC {
 
         double t = bottomTime - step.getTime();
         if (t <= 0){
-            throw new EngineError("Bottom time shorter than descent time");
+            throw new EngineException("Bottom time shorter than descent time");
         }
         step = stepNext(step, t, bottomGas);
         steps.add(step);

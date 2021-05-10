@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 // TODO: Delete the class when finished with testing
 public class Tests {
-    public static void testingVPM() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+    public static void testingVPM() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunVPM engine = new RunVPM();
         engine.addGas(0, 21);
         ArrayList<Step> profile = engine.plan(35, 40);
@@ -17,7 +17,7 @@ public class Tests {
         }
     }
 
-    public static void main(String args[]) throws PressureException, GasConfigException, EngineError,
+    public static void main(String args[]) throws PressureException, GasConfigException, EngineException,
             GradientFactorException {
         testingVPM();
     }

@@ -383,7 +383,7 @@ public class RunVPM {
 
     //TODO: Finish by adding ascent stages
     public ArrayList<Step> plan(double maxDepth, int bottomTime) throws PressureException,
-            GradientFactorException, GasConfigException, EngineError {
+            GradientFactorException, GasConfigException, EngineException {
         Step step = null;
         ArrayList<Step> tempSteps;
         decompressionStopTable.clear();
@@ -401,7 +401,7 @@ public class RunVPM {
 
         double t = bottomTime - step.getTime();
         if (t <= 0) {
-            throw new EngineError("Bottom time shorter than descent time");
+            throw new EngineException("Bottom time shorter than descent time");
         }
         step = stepNext(step, t, bottomGas);
         diveSteps.add(step);

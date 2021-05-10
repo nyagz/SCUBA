@@ -86,7 +86,7 @@ public class Tests {
     //     }
     // }
 
-    public static void testBoth() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+    public static void testBoth() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunB engine = new RunB();
         engine.addGas(0, 21);
         ArrayList<Step> profile = engine.plan(35, 40);
@@ -117,7 +117,7 @@ public class Tests {
         }
     }
 
-    public static void testZHL16B() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+    public static void testZHL16B() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunB engine = new RunB();
         engine.addGas(0, 21);
         ArrayList<Step> profile = engine.plan(35, 40);
@@ -136,7 +136,7 @@ public class Tests {
 
     }
 
-    public static void testZHL16C() throws PressureException, GasConfigException, EngineError, GradientFactorException {
+    public static void testZHL16C() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunC engine = new RunC();
         engine.addGas(0, 21);
         ArrayList<Step> profile = engine.plan(35, 40);
@@ -155,7 +155,7 @@ public class Tests {
 
     }
 
-    public static void main(String args[]) throws PressureException, GasConfigException, EngineError,
+    public static void main(String args[]) throws PressureException, GasConfigException, EngineException,
             GradientFactorException {
         // testingPlanning();
         // ZHL16BGF model = new ZHL16BGF();
