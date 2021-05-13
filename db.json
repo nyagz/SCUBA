@@ -40,8 +40,7 @@
   },
   "addedGases": {},
   "diveProfiles": {
-    "profiles": [
-      {
+    "profiles": {
         "engine": [
           {
             "id": 1,
