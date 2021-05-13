@@ -2,6 +2,8 @@ package Buhlmann;
 
 import java.util.ArrayList;
 
+import static Buhlmann.Gases.getAir;
+
 // TODO: Delete the class when finished with testing
 public class Tests {
 
@@ -119,7 +121,7 @@ public class Tests {
 
     public static void testZHL16B() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunB engine = new RunB();
-        engine.addGas(0, 21);
+        engine.addGas(0, 32, 68);
         ArrayList<Step> profile = engine.plan(35, 40);
         System.out.println("Dive steps:");
         for (Step p: profile){
@@ -128,17 +130,15 @@ public class Tests {
         }
         System.out.println();
         System.out.println("Decompression stops:");
-        for (DecoStop d: engine.decompressionStopTable){
-            System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
+        for (DecoStop d: engine.decompressionStopTable) {
+            System.out.println("DecompressionStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
         }
-        System.out.println();
-        System.out.println("ZHL16C:");
 
     }
 
     public static void testZHL16C() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunC engine = new RunC();
-        engine.addGas(0, 21);
+        engine.addGas(0, 32, 68);
         ArrayList<Step> profile = engine.plan(35, 40);
         System.out.println("Dive steps:");
         for (Step p: profile){
@@ -148,7 +148,7 @@ public class Tests {
         System.out.println();
         System.out.println("Decompression stops:");
         for (DecoStop d: engine.decompressionStopTable){
-            System.out.println("DecoStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
+            System.out.println("DecompressionStop(depth = " + d.getDepth() + ", time = " + d.getMin() + ")");
         }
         System.out.println();
 
