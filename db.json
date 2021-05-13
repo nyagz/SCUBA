@@ -62,6 +62,97 @@
           "abs_p": 4.508,
           "time": 40,
           "gf": 0.3
+        },
+        {
+          "id": 4,
+          "phase": "ASCENT",
+          "abs_p": 2.81055,
+          "time": 41.7,
+          "gf": 0.3917
+        },
+        {
+          "id": 5,
+          "phase": "DECO_STOP",
+          "abs_p": 2.8106,
+          "time": 42.7,
+          "gf": 0.3
+        },
+        {
+          "id": 6,
+          "phase": "ASCENT",
+          "abs_p": 2.511,
+          "time": 43,
+          "gf": 0.3917
+        },
+        {
+          "id": 7,
+          "phase": "DECO_STOP",
+          "abs_p": 2.511,
+          "time": 44.0,
+          "gf": 0.3917
+        },
+        {
+          "id": 8,
+          "phase": "ASCENT",
+          "abs_p": 2.2115,
+          "time": 44.3,
+          "gf": 0.4833
+        },
+        {
+          "id": 9,
+          "phase": "DECO_STOP",
+          "abs_p": 2.2115,
+          "time": 48.3,
+          "gf": 0.4833
+        },
+        {
+          "id": 10,
+          "phase": "ASCENT",
+          "abs_p": 1.9119,
+          "time": 48.6,
+          "gf": 0.575
+        },
+        {
+          "id": 11,
+          "phase": "DECO_STOP",
+          "abs_p": 1.9119,
+          "time": 54.6,
+          "gf": 0.6667
+        },
+        {
+          "id": 12,
+          "phase": "ASCENT",
+          "abs_p": 1.6124,
+          "time": 54.9,
+          "gf": 0.6667
+        },
+        {
+          "id": 13,
+          "phase": "DECO_STOP",
+          "abs_p": 1.6124,
+          "time": 64.9,
+          "gf": 0.6667
+        },
+        {
+          "id": 14,
+          "phase": "ASCENT",
+          "abs_p": 1.3128,
+          "time": 65.2,
+          "gf": 0.7583
+        },
+        {
+          "id": 15,
+          "phase": "DECO_STOP",
+          "abs_p": 1.3128,
+          "time": 91.2,
+          "gf": 0.7583
+        },
+        {
+          "id": 16,
+          "phase": "ASCENT",
+          "abs_p": 1.0133,
+          "time": 91.5,
+          "gf": 0.85
         }
       ]
     }
