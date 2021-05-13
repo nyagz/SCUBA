@@ -41,30 +41,29 @@
   "addedGases": {},
   "diveProfiles": {
     "profiles": {
-        "engine": [
-          {
-            "id": 1,
-            "phase":"START",
-            "abs_p": 1.01325,
-            "time": 0.0,
-            "gf": 0.3
-          },
-          {
-            "id": 2,
-            "phase": "descent",
-            "abs_p": 4.508,
-            "time": 1.75,
-            "gf": 0.3
-          },
-          {
-            "id": 3,
-            "phase": "DIVE",
-            "abs_p": 4.508,
-            "time": 40,
-            "gf": 0.3
-          }
-        ]
-      }
-    ]
+      "engine": [
+        {
+          "id": 1,
+          "phase":"START",
+          "abs_p": 1.01325,
+          "time": 0.0,
+          "gf": 0.3
+        },
+        {
+          "id": 2,
+          "phase": "descent",
+          "abs_p": 4.508,
+          "time": 1.75,
+          "gf": 0.3
+        },
+        {
+          "id": 3,
+          "phase": "DIVE",
+          "abs_p": 4.508,
+          "time": 40,
+          "gf": 0.3
+        }
+      ]
+    }
   }
 }
