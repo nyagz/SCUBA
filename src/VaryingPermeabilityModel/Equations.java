@@ -1,6 +1,5 @@
 package VaryingPermeabilityModel;
 
-// TODO: Add function descriptions
 public class Equations {
     /**
      * Calculates the allowed supersaturation value fot the most conservative allowance of bubbles in the body

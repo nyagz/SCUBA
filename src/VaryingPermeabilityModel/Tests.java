@@ -4,7 +4,6 @@ import Buhlmann.*;
 
 import java.util.ArrayList;
 
-// TODO: Delete the class when finished with testing
 public class Tests {
     public static void testingVPM() throws PressureException, GasConfigException, EngineException, GradientFactorException {
         RunVPM engine = new RunVPM();

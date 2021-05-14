@@ -222,7 +222,6 @@ public class RunVPM {
         return Equations.pssMin(surfaceTension, crumblingCompression, minimumInitialRadius, crumblingCompression, pCrush);
     }
 
-    // FIXME: Continue from here (Step 2)
     public void findFirstDecoStop(double pMinSS, CompartmentData loadingData){
 
         for(int i = 0; i < loadingData.getTissues().length; i++){

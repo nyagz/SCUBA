@@ -3,7 +3,6 @@ package VaryingPermeabilityModel;
 import Buhlmann.*;
 import Buhlmann.Equations;
 
-// TODO: descent and dive to be done the same way as Buhlmann's but ascent should use VPM instead of ZHL16
 public class VPM extends ZHL16B {
     public int compartments;
     public double startP_N2;
