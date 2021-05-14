@@ -860,8 +860,4 @@ public class RunC {
         }
         return hi - 1; // hi is first k for which canAscend(k) is not true, so canAscend(hi - 1) is true
     }
-
-    public static void main(String args[]) throws GradientFactorException, PressureException, GasConfigException {
-
-    }
 }
